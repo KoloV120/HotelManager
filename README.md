@@ -1,1 +1,2 @@
 # HotelManager
+# Cool
