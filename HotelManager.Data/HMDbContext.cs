@@ -22,5 +22,6 @@ public class HMDbContext : DbContext
         base.OnModelCreating(modelBuilder);
         // Add any additional configuration here if needed
     }
+    
 }
 
