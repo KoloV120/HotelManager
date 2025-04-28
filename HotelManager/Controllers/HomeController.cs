@@ -1,21 +1,36 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using HotelManager.Models;
+using HotelManager.Data;
+using HotelManager.Data.Models;
 
 namespace HotelManager.Controllers;
 
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
-
-    public HomeController(ILogger<HomeController> logger)
+    private readonly HMDbContext _context;
+    public HomeController(HMDbContext context, ILogger<HomeController> logger)
     {
+        _context = context;
         _logger = logger;
     }
 
     public IActionResult Index()
     {
         return View();
+    }
+    public IActionResult Rooms()
+    {
+        
+        return View();
+    }
+    public IActionResult RoomsAdd(Room room)
+    {
+
+            _context.Rooms.Add(room);  // Add the new room to the context
+            _context.SaveChanges();  // Save changes to the database
+            return RedirectToAction("Index");  // Redirect back to the Rooms page
     }
 
     public IActionResult Privacy()
