@@ -28,7 +28,7 @@ public class HotelService : BaseService<Hotel>, IHotelService
                     Address = a.Address,
                     City = a.City,
                     Email = a.Email,
-                    Rooms = (ICollection<Room>)a.Rooms
+                    Rooms = a.Rooms
                         .Select(s => new RoomMinifiedInfoProjection
                         {
                             Id = s.Id,

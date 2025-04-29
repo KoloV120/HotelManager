@@ -4,7 +4,7 @@ using HotelManager.Data.Models;
 
 namespace HotelManager.Core.Interfaces;
 
-public interface HotelService : IService<Hotel>
+public interface IHotelService : IService<Hotel>
 {
         IEnumerable<HotelGeneralInfoProjection> GetAll();
         IEnumerable<HotelMinifiedInfoProjection> GetAllMinified();

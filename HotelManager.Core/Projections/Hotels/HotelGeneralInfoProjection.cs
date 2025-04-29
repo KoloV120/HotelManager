@@ -1,4 +1,5 @@
 using System;
+using HotelManager.Core.Projections.Rooms;
 using HotelManager.Data.Models;
 
 namespace HotelManager.Core.Projections.Hotels;
@@ -12,5 +13,5 @@ public record HotelGeneralInfoProjection
     public required string Email { get; set; } 
 
     // Navigation property
-    public required ICollection<Room> Rooms { get; set; }
+    public required ICollection<RoomMinifiedInfoProjection> Rooms { get; set; }
 }
