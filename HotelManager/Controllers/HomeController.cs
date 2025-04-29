@@ -27,10 +27,13 @@ public class HomeController : Controller
     }
     public IActionResult RoomsAdd(Room room)
     {
-
-            _context.Rooms.Add(room);  // Add the new room to the context
-            _context.SaveChanges();  // Save changes to the database
-            return RedirectToAction("Index");  // Redirect back to the Rooms page
+        if (ModelState.IsValid)
+        {
+            _context.Rooms.Add(room);
+            _context.SaveChanges();
+            return RedirectToAction("Index");
+        }
+        return RedirectToAction("Rooms");
     }
 
     public IActionResult Privacy()
