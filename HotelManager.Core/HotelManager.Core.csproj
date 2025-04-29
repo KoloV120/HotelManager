@@ -9,9 +9,5 @@
   <ItemGroup>
     <ProjectReference Include="..\HotelManager.Data\HotelManager.Data.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Configuration\" />
-  </ItemGroup>
   
 </Project>
