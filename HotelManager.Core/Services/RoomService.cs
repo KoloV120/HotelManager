@@ -1,5 +1,5 @@
 using System;
-using HotelManager.Core.Configuration;
+using HotelManager.Core.Interfaces;
 using HotelManager.Core.Projections.Bookings;
 using HotelManager.Core.Projections.Rooms;
 using HotelManager.Data.Models;

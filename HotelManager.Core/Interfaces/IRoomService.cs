@@ -1,9 +1,8 @@
 using System;
-using HotelManager.Core.Interfaces;
 using HotelManager.Core.Projections.Rooms;
 using HotelManager.Data.Models;
 
-namespace HotelManager.Core.Configuration;
+namespace HotelManager.Core.Interfaces;
 
 public interface IRoomService : IService<Room>
 {
