@@ -1,5 +1,6 @@
 using HotelManager.Data;
 using Microsoft.EntityFrameworkCore;
+using HotelManager.Core.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +20,7 @@ using (var scope = app.Services.CreateScope())
     var dbContext = scope.ServiceProvider.GetRequiredService<HMDbContext>();
     dbContext.Database.Migrate();  // 👈 this applies migrations automatically
 }
+builder.Services.RegisterServices();    // Register your services here
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
