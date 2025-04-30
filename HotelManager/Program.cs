@@ -37,6 +37,11 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapControllerRoute(
+    name: "hotelManagement",
+    pattern: "HotelManagement/ManageHotel/{id}",
+    defaults: new { controller = "HotelManagement", action = "ManageHotel" });
+
+app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 

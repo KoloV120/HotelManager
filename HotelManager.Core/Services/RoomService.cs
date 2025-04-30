@@ -27,6 +27,7 @@ public class RoomService : BaseService<Room>, IRoomService
                 Type = r.Type,
                 PricePerNight = r.PricePerNight,
                 Status = r.Status,
+                HotelId = r.HotelId,
                 Bookings = r.Bookings
                     .Select(b => new BookingMinifiedInfoProjection
                     {

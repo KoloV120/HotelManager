@@ -1,0 +1,77 @@
+@model HotelManager.Models.HotelManagerViewModel
+
+@{
+    ViewData["Title"] = ViewData["HotelName"] + " - Dashboard";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">🏨 @ViewData["HotelName"]</h2>
+
+    <!-- Navigation Buttons -->
+    <div class="mb-5">
+        <a asp-controller="Guest" asp-action="Index" class="btn btn-primary me-2">Manage Guests</a>
+        <a asp-controller="Room" asp-action="Index" class="btn btn-secondary me-2">Manage Rooms</a>
+        <a asp-controller="Booking" asp-action="Index" class="btn btn-success me-2">Manage Bookings</a>
+        <a asp-controller="Report" asp-action="Index" class="btn btn-info">View Reports</a>
+    </div>
+
+    <!-- Stats Overview -->
+    <div class="row mb-5">
+        <div class="col-md-3">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Total Guests</h5>
+                    <p class="card-text display-6">@Model.TotalGuests</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-success mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Rooms Available</h5>
+                    <p class="card-text display-6">@Model.AvailableRooms</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-warning mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Active Bookings</h5>
+                    <p class="card-text display-6">@Model.ActiveBookings</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card text-white bg-dark mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Monthly Revenue</h5>
+                    <p class="card-text display-6">$@Model.MonthlyRevenue</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Bookings Table -->
+    <h4>📅 Recent Bookings</h4>
+    <table class="table table-striped table-bordered">
+        <thead class="table-light">
+            <tr>
+                <th>Guest</th>
+                <th>Room</th>
+                <th>Check-In</th>
+                <th>Check-Out</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var booking in Model.RecentBookings)
+            {
+                <tr>
+                    <td>@booking.GuestName</td>
+                    <td>@booking.RoomNumber</td>
+                    <td>@booking.CheckIn.ToShortDateString()</td>
+                    <td>@booking.CheckOut.ToShortDateString()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

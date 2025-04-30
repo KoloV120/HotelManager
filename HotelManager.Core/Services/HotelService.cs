@@ -33,7 +33,8 @@ public class HotelService : BaseService<Hotel>, IHotelService
                         {
                             Id = s.Id,
                             Number = s.Number,
-                            PricePerNight = s.PricePerNight
+                            PricePerNight = s.PricePerNight,
+                            HotelId = s.HotelId
                         })
                         .OrderBy(s => s.Number)
                         .ToList()

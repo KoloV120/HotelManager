@@ -1,6 +1,6 @@
 namespace HotelManager.Models;
 
-public class DashboardViewModel
+public class HotelManagerViewModel
 {
     public int TotalGuests { get; set; }
     public int AvailableRooms { get; set; }

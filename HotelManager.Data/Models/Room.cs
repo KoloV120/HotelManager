@@ -13,7 +13,7 @@ public class Room : IIdentifiable
     public string Status { get; set; }  = string.Empty;// "available", "booked", "maintenance"
 
     // Foreign key
-    //public int HotelId { get; set; }
+    public Guid HotelId { get; set; }
 
     // Navigation properties
     public Hotel Hotel { get; set; } = new Hotel();

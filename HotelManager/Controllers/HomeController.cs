@@ -2,70 +2,80 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using HotelManager.Models;
 using HotelManager.Core.Interfaces;
-using HotelManager.Core.Services;
+using HotelManager.Data.Models;
 
 namespace HotelManager.Controllers;
 
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
-    private readonly IBookingService _bookingService;
-    private readonly IGuestService _guestService;
-    private readonly IRoomService _roomService;
+    private readonly IHotelService _hotelService;
 
     public HomeController(
-        IBookingService bookingService,
-        IGuestService guestService,
-        IRoomService roomService,
+        IHotelService hotelService,
         ILogger<HomeController> logger)
     {
-        _bookingService = bookingService;
-        _guestService = guestService;
-        _roomService = roomService;
+        _hotelService = hotelService;
         _logger = logger;
     }
 
-    public async Task<IActionResult> Index()
+    public IActionResult Index()
     {
         try
         {
-            var allGuests = _guestService.GetAll();
-            var allRooms = _roomService.GetAll();
-            var allBookings = _bookingService.GetAll();
-
+            var hotels = _hotelService.GetAll();
+            
             var viewModel = new DashboardViewModel
             {
-                TotalGuests = allGuests.Count(),
-                AvailableRooms = allRooms.Count(r => r.Status == "available"),
-                ActiveBookings = allBookings.Count(b => b.Status == "active"),
-                MonthlyRevenue = allBookings
-                    .Where(b => b.CheckIn.Month == DateTime.Now.Month)
-                    .Sum(b => b.Room.PricePerNight * (b.CheckOut - b.CheckIn).Days),
-                RecentBookings = allBookings
-                    .OrderByDescending(b => b.CheckIn)
-                    .Take(5)
-                    .Select(b => new RecentBookingInfo
-                    {
-                        GuestName = b.Guest.Name,
-                        RoomNumber = b.Room.Number.ToString(),
-                        CheckIn = b.CheckIn,
-                        CheckOut = b.CheckOut
-                    })
-                    .ToList()
+                Hotels = hotels.Select(h => new HotelCardViewModel
+                {
+                    Id = h.Id,
+                    Name = h.Name,
+                    City = h.City,
+                    TotalRooms = h.Rooms.Count
+                }).ToList()
             };
 
             return View(viewModel);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error loading dashboard data");
+            _logger.LogError(ex, "Error loading hotels");
             return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
-
-    public IActionResult Privacy()
+    public IActionResult AddHotel([FromForm] HotelInputModel model)
     {
-        return View();
+        if (!ModelState.IsValid)
+        {
+            return RedirectToAction(nameof(Index));
+        }
+
+        try
+        {
+            var hotel = new Hotel
+            {
+                Id = Guid.NewGuid(),
+                Name = model.Name,
+                City = model.City,
+                Address = model.Address,
+                Email = model.Email
+            };
+
+            bool success = _hotelService.Create(hotel);
+            if (!success)
+            {
+                ModelState.AddModelError("", "Failed to create hotel");
+                return RedirectToAction(nameof(Index));
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error adding hotel");
+            return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
