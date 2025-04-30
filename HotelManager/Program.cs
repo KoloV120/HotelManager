@@ -14,13 +14,13 @@ if (string.IsNullOrEmpty(connectionString))
 builder.Services.AddDbContext<HMDbContext>(options =>
 options.UseMySQL(connectionString)); // Use MySQL as the database provider
 
+builder.Services.RegisterServices();    // Register your services here
 var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<HMDbContext>();
     dbContext.Database.Migrate();  // 👈 this applies migrations automatically
 }
-builder.Services.RegisterServices();    // Register your services here
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

@@ -32,7 +32,8 @@ public class HotelService : BaseService<Hotel>, IHotelService
                         .Select(s => new RoomMinifiedInfoProjection
                         {
                             Id = s.Id,
-                            Number = s.Number
+                            Number = s.Number,
+                            PricePerNight = s.PricePerNight
                         })
                         .OrderBy(s => s.Number)
                         .ToList()

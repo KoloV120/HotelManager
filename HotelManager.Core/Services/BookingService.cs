@@ -35,7 +35,8 @@ public class BookingService : BaseService<Booking>, IBookingService
                 Room = new RoomMinifiedInfoProjection
                 {
                     Id = b.Room.Id,
-                    Number = b.Room.Number
+                    Number = b.Room.Number,
+                    PricePerNight = b.Room.PricePerNight
                 }
             },
             new[] { checkInOrderClause });
