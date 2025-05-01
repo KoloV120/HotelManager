@@ -101,7 +101,7 @@
                     <div class="modal-body">
                         <input type="hidden" name="HotelId" value="@ViewContext.RouteData.Values["id"]" />
                         <input type="hidden" id="GuestId" name="GuestId" />
-                        
+
                         <div class="alert alert-info">
                             Booking for: <span id="guestName"></span>
                         </div>
@@ -109,24 +109,31 @@
                         <div class="mb-3">
                             <label class="form-label">Room</label>
                             <select name="RoomId" class="form-select" required>
-                                <option value="">Select a room...</option>
-                                @foreach (var room in Model.ListOfAvailableRooms)
+                                @if (Model.ListOfAvailableRooms.Any())
                                 {
-                                    <option value="@room.Id">Room @room.Number - $@room.PricePerNight/night</option>
+                                    <option value="">Select a room...</option>
+                                    @foreach (var room in Model.ListOfAvailableRooms)
+                                    {
+                                        <option value="@room.Id">@room.Number - @room.Type</option>
+                                    }
+                                }
+                                else
+                                {
+                                    <option value="">No available rooms</option>
                                 }
                             </select>
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Check-in Date</label>
-                            <input type="date" class="form-control" name="CheckIn" required 
-                                   min="@DateTime.Now.ToString("yyyy-MM-dd")">
+                            <input type="date" class="form-control" name="CheckIn" required
+                                min="@DateTime.Now.ToString("yyyy-MM-dd")">
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Check-out Date</label>
                             <input type="date" class="form-control" name="CheckOut" required
-                                   min="@DateTime.Now.AddDays(1).ToString("yyyy-MM-dd")">
+                                min="@DateTime.Now.AddDays(1).ToString("yyyy-MM-dd")">
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -165,21 +172,21 @@
 
 @section Scripts {
     <script>
-        document.getElementById('addGuestForm').addEventListener('submit', async function(e) {
+        document.getElementById('addGuestForm').addEventListener('submit', async function (e) {
             e.preventDefault();
-            
+
             const formData = new FormData(this);
             try {
                 const response = await fetch('@Url.Action("AddGuest", "HotelManagement")', {
                     method: 'POST',
                     body: formData
                 });
-                
+
                 if (response.ok) {
                     const result = await response.json();
                     document.getElementById('GuestId').value = result.guestId;
                     document.getElementById('guestName').textContent = formData.get('Name');
-                    
+
                     // Hide guest modal and show booking modal
                     bootstrap.Modal.getInstance(document.getElementById('addGuestModal')).hide();
                     new bootstrap.Modal(document.getElementById('addBookingModal')).show();
@@ -196,11 +203,11 @@
         const checkInInput = document.querySelector('input[name="CheckIn"]');
         const checkOutInput = document.querySelector('input[name="CheckOut"]');
 
-        checkInInput.addEventListener('change', function() {
+        checkInInput.addEventListener('change', function () {
             const checkInDate = new Date(this.value);
             const minCheckOut = new Date(checkInDate);
             minCheckOut.setDate(minCheckOut.getDate() + 1);
-            
+
             checkOutInput.min = minCheckOut.toISOString().split('T')[0];
             if (new Date(checkOutInput.value) <= checkInDate) {
                 checkOutInput.value = minCheckOut.toISOString().split('T')[0];

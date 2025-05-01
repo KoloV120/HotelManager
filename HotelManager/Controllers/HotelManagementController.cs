@@ -34,14 +34,12 @@ public class HotelManagementController : Controller
         {
             var dashboardData = _hotelService.GetHotelDashboard(id);
             var guests = _guestService.GetAllMinified();
-            var rooms = _roomService.GetAllMinified()
-                .Where(r => r.HotelId == id && r.Status != "available");
 
             var viewModel = new HotelManagerViewModel
             {
                 TotalGuests = dashboardData.TotalGuests,
-                AvailableRooms = dashboardData.AvailableRooms,
-                ActiveBookings = dashboardData.ActiveBookings,
+                AvailableRooms = dashboardData.AvailableRooms.Count(),
+                ActiveBookings = dashboardData.ActiveBookings.Count(),
                 MonthlyRevenue = dashboardData.MonthlyRevenue,
                 RecentBookings = dashboardData.RecentBookings.Select(b => new RecentBookingInfo
                 {
@@ -55,12 +53,12 @@ public class HotelManagementController : Controller
                     Id = g.Id,
                     Name = g.Name
                 }).ToList(),
-                ListOfAvailableRooms = rooms.Select(r => new RoomSelectListItem
+                ListOfAvailableRooms = dashboardData.AvailableRooms.Select(r => new RoomSelectListItem
                 {
                     Id = r.Id,
                     Number = r.Number,
-                    PricePerNight = r.PricePerNight,
-                    Type = r.Type
+                    Type = r.Type,
+                    PricePerNight = r.PricePerNight
                 }).ToList()
             };
 
@@ -117,6 +115,12 @@ public class HotelManagementController : Controller
         {
             return BadRequest(ModelState);
         }
+        var guest = _guestService.GetById(model.GuestId);
+        var room = _roomService.GetById(model.RoomId);
+        if(guest == null || room == null)
+        {
+            return BadRequest("Guest or Room ID is invalid.");
+        }
 
         try
         {
@@ -125,8 +129,8 @@ public class HotelManagementController : Controller
                 CheckIn = model.CheckIn,
                 CheckOut = model.CheckOut,
                 Status = "confirmed",
-                Guest  = _guestService.GetById(model.GuestId),
-                Room = _roomService.GetById(model.RoomId),
+                Guest  = guest,
+                Room = room
             };
 
             _bookingService.Create(booking);

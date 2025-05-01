@@ -1,11 +1,12 @@
 using HotelManager.Core.Projections.Bookings;
+using HotelManager.Core.Projections.Rooms;
 
 public class HotelDashboardData
 {
-    public string? HotelName { get; set; }
-    public int TotalGuests { get; set; }
-    public int AvailableRooms { get; set; }
-    public int ActiveBookings { get; set; }
-    public decimal MonthlyRevenue { get; set; }
-    public IEnumerable<BookingGeneralInfoProjection>? RecentBookings { get; set; }
+    public required string HotelName { get; set; }
+    public required int TotalGuests { get; set; }
+    public required IEnumerable<RoomGeneralInfoProjection> AvailableRooms { get; set; }
+    public required IEnumerable<BookingGeneralInfoProjection> ActiveBookings { get; set; }
+    public required decimal MonthlyRevenue { get; set; }
+    public required IEnumerable<BookingGeneralInfoProjection> RecentBookings { get; set; }
 }

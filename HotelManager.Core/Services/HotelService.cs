@@ -74,18 +74,18 @@ public class HotelService : BaseService<Hotel>, IHotelService
             b.CheckOut >= DateTime.Now);
     }
 
-    public int GetAvailableRoomsCount(Guid hotelId)
+    public IEnumerable<RoomGeneralInfoProjection> GetAvailableRooms(Guid hotelId)
     {
         var rooms = _roomService.GetAll();
-        return rooms.Count(r => 
+        return rooms.Where(r => 
             r.HotelId == hotelId && 
             !r.Bookings.Any(b => b.CheckOut >= DateTime.Now));
     }
 
-    public int GetActiveBookingsCount(Guid hotelId)
+    public IEnumerable<BookingGeneralInfoProjection> GetActiveBookings(Guid hotelId)
     {
         var bookings = _bookingService.GetAll();
-        return bookings.Count(b => 
+        return bookings.Where(b => 
             b.Room.HotelId == hotelId && 
             b.CheckIn <= DateTime.Now && 
             b.CheckOut >= DateTime.Now);
@@ -142,8 +142,8 @@ public class HotelService : BaseService<Hotel>, IHotelService
         {
             HotelName = hotel.Name,
             TotalGuests =  GetCurrentGuestsCount(hotelId),
-            AvailableRooms =  GetAvailableRoomsCount(hotelId),
-            ActiveBookings =  GetActiveBookingsCount(hotelId),
+            AvailableRooms =  GetAvailableRooms(hotelId),
+            ActiveBookings =  GetActiveBookings(hotelId),
             MonthlyRevenue =  GetMonthlyRevenue(hotelId),
             RecentBookings =  GetRecentBookings(hotelId)
         };
