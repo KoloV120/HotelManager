@@ -1,4 +1,6 @@
 using System;
+using HotelManager.Core.Projections.Guests;
+using HotelManager.Core.Projections.Rooms;
 
 namespace HotelManager.Core.Projections.Bookings;
 

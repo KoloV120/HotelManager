@@ -43,6 +43,18 @@ public class RoomService : BaseService<Room>, IRoomService
 
     public IEnumerable<RoomMinifiedInfoProjection> GetAllMinified()
     {
-        throw new NotImplementedException();
+        var numberOrderClause = new OrderClause<Room> { Expression = r => r.Number };
+
+        return this.Repository.GetMany(
+            _ => true,
+            r => new RoomMinifiedInfoProjection
+            {
+                Id = r.Id,
+                Number = r.Number,
+                PricePerNight = r.PricePerNight,
+                Status = r.Status,
+                HotelId = r.HotelId
+            },
+            new[] { numberOrderClause });
     }
 }

@@ -38,6 +38,7 @@ public class BookingService : BaseService<Booking>, IBookingService
                     Number = b.Room.Number,
                     PricePerNight = b.Room.PricePerNight,
                     HotelId = b.Room.HotelId,
+                    Status = b.Room.Status
                 }
             },
             new[] { checkInOrderClause });

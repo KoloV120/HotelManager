@@ -41,6 +41,15 @@ public class GuestService : BaseService<Guest>, IGuestService
 
     public IEnumerable<GuestMinifiedInfoProjection> GetAllMinified()
     {
-        throw new NotImplementedException();
+        var nameOrderClause = new OrderClause<Guest> { Expression = g => g.Name };
+
+        return this.Repository.GetMany(
+            _ => true,
+            g => new GuestMinifiedInfoProjection
+            {
+                Id = g.Id,
+                Name = g.Name,
+            },
+            new[] { nameOrderClause });
     }
 }

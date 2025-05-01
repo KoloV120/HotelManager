@@ -31,43 +31,52 @@ public class HotelManagementController : Controller
     {
         try
         {
-            var hotel = _hotelService.GetById(id);
-            if (hotel == null)
-            {
-                return NotFound();
-            }
-
-            var bookings = _bookingService.GetAll()
-                .Where(b => b.Room.HotelId == id);
+            var dashboardData = _hotelService.GetHotelDashboard(id);
+            var guests = _guestService.GetAllMinified();
+            var rooms = _roomService.GetAllMinified()
+                .Where(r => r.HotelId == id && r.Status == "available");
 
             var viewModel = new HotelManagerViewModel
             {
-                TotalGuests = bookings.Count(b => b.CheckIn <= DateTime.Now && b.CheckOut >= DateTime.Now),
-                AvailableRooms = _roomService.GetAll().Count(r => r.HotelId == id && !r.Bookings.Any(b => b.CheckOut >= DateTime.Now)),
-                ActiveBookings = bookings.Count(b => b.CheckIn <= DateTime.Now && b.CheckOut >= DateTime.Now),
-                MonthlyRevenue = bookings
-                    .Where(b => b.CheckIn.Month == DateTime.Now.Month)
-                    .Sum(b => b.Room.PricePerNight * (b.CheckOut - b.CheckIn).Days),
-                RecentBookings = bookings
-                    .OrderByDescending(b => b.CheckIn)
-                    .Take(5)
-                    .Select(b => new RecentBookingInfo
-                    {
-                        GuestName = b.Guest.Name,
-                        RoomNumber = b.Room.Number.ToString(),
-                        CheckIn = b.CheckIn,
-                        CheckOut = b.CheckOut
-                    })
-                    .ToList()
+                TotalGuests = dashboardData.TotalGuests,
+                AvailableRooms = dashboardData.AvailableRooms,
+                ActiveBookings = dashboardData.ActiveBookings,
+                MonthlyRevenue = dashboardData.MonthlyRevenue,
+                RecentBookings = dashboardData.RecentBookings.Select(b => new RecentBookingInfo
+                {
+                    GuestName = b.Guest.Name,
+                    RoomNumber = b.Room.Number,
+                    CheckIn = b.CheckIn,
+                    CheckOut = b.CheckOut,
+                }).ToList(),
+                AvailableGuests = guests.Select(g => new GuestSelectListItem
+                {
+                    Id = g.Id,
+                    Name = g.Name
+                }).ToList(),
+                ListOfAvailableRooms = rooms.Select(r => new RoomSelectListItem
+                {
+                    Id = r.Id,
+                    Number = r.Number,
+                    PricePerNight = r.PricePerNight
+                }).ToList()
             };
 
-            ViewData["HotelName"] = hotel.Name;
+            ViewData["HotelName"] = dashboardData.HotelName;
             return View("ManageHotel", viewModel);
+        }
+        catch (InvalidOperationException ex)
+        {
+            _logger.LogWarning(ex, "Hotel not found");
+            return NotFound();
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error managing hotel {HotelId}", id);
-            return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View("Error", new ErrorViewModel 
+            { 
+                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier 
+            });
         }
     }
 

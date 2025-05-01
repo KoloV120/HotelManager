@@ -50,6 +50,68 @@
         </div>
     </div>
 
+    <!-- Add Booking Button -->
+    <div class="mt-4 mb-5">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addBookingModal">
+            <i class="bi bi-plus-circle"></i> New Booking
+        </button>
+    </div>
+
+    <!-- Add Booking Modal -->
+    <div class="modal fade" id="addBookingModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add New Booking</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form asp-controller="HotelManagement" asp-action="AddBooking" method="post">
+                    <div class="modal-body">
+                        <input type="hidden" name="HotelId" value="@ViewContext.RouteData.Values["id"]" />
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Guest</label>
+                            <select name="GuestId" class="form-select" required>
+                                <option value="">Select a guest...</option>
+                                @foreach (var guest in Model.AvailableGuests)
+                                {
+                                    <option value="@guest.Id">@guest.Name</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Room</label>
+                            <select name="RoomId" class="form-select" required>
+                                <option value="">Select a room...</option>
+                                @foreach (var room in Model.ListOfAvailableRooms)
+                                {
+                                    <option value="@room.Id">Room @room.Number - $@room.PricePerNight/night</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Check-in Date</label>
+                            <input type="date" class="form-control" name="CheckIn" required 
+                                   min="@DateTime.Now.ToString("yyyy-MM-dd")">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Check-out Date</label>
+                            <input type="date" class="form-control" name="CheckOut" required
+                                   min="@DateTime.Now.AddDays(1).ToString("yyyy-MM-dd")">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Create Booking</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- Recent Bookings Table -->
     <h4>📅 Recent Bookings</h4>
     <table class="table table-striped table-bordered">
@@ -74,3 +136,22 @@
         </tbody>
     </table>
 </div>
+
+@section Scripts {
+    <script>
+        // Add date validation
+        const checkInInput = document.querySelector('input[name="CheckIn"]');
+        const checkOutInput = document.querySelector('input[name="CheckOut"]');
+
+        checkInInput.addEventListener('change', function() {
+            const checkInDate = new Date(this.value);
+            const minCheckOut = new Date(checkInDate);
+            minCheckOut.setDate(minCheckOut.getDate() + 1);
+            
+            checkOutInput.min = minCheckOut.toISOString().split('T')[0];
+            if (new Date(checkOutInput.value) <= checkInDate) {
+                checkOutInput.value = minCheckOut.toISOString().split('T')[0];
+            }
+        });
+    </script>
+}
