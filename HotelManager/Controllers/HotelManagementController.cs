@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using HotelManager.Core.Interfaces;
 using HotelManager.Models;
 using System.Diagnostics;
+using HotelManager.Data.Models;
 
 namespace HotelManager.Controllers;
 
@@ -74,6 +75,67 @@ public class HotelManagementController : Controller
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error managing hotel {HotelId}", id);
+            return View("Error", new ErrorViewModel 
+            { 
+                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier 
+            });
+        }
+    }
+
+    [HttpPost]
+    public IActionResult AddGuest([FromForm] GuestInputModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        try
+        {
+            var guest = new Guest
+            {
+                Name = model.Name,
+                Email = model.Email,
+                Phone = model.Phone
+            };
+
+            _guestService.Create(guest);
+            
+            return Json(new { success = true, guestId = guest.Id });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error adding guest");
+            return BadRequest("Error creating guest");
+        }
+    }
+
+    [HttpPost]
+    public IActionResult AddBooking([FromForm] BookingInputModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        try
+        {
+            var booking = new Booking
+            {
+                CheckIn = model.CheckIn,
+                CheckOut = model.CheckOut,
+                Status = "confirmed",
+                Guest  = _guestService.GetById(model.GuestId),
+                Room = _roomService.GetById(model.RoomId),
+            };
+
+            _bookingService.Create(booking);
+            
+            return RedirectToAction(nameof(ManageHotel), new { id = model.HotelId });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error adding booking");
             return View("Error", new ErrorViewModel 
             { 
                 RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier 
