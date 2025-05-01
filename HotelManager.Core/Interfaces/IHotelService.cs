@@ -15,5 +15,5 @@ public interface IHotelService : IService<Hotel>
     IEnumerable<BookingGeneralInfoProjection> GetActiveBookings(Guid hotelId);
     decimal GetMonthlyRevenue(Guid hotelId);
     IEnumerable<BookingGeneralInfoProjection> GetRecentBookings(Guid hotelId, int count = 5);
-    HotelDashboardData GetHotelDashboard(Guid hotelId);
+    HotelDashboardData GetHotelInfo(Guid hotelId);
 }

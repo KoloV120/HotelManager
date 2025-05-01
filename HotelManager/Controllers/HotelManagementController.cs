@@ -32,7 +32,7 @@ public class HotelManagementController : Controller
     {
         try
         {
-            var dashboardData = _hotelService.GetHotelDashboard(id);
+            var dashboardData = _hotelService.GetHotelInfo(id);
             var guests = _guestService.GetAllMinified();
 
             var viewModel = new HotelManagerViewModel

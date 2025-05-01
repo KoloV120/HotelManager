@@ -132,7 +132,7 @@ public class HotelService : BaseService<Hotel>, IHotelService
             });
     }
 
-    public  HotelDashboardData GetHotelDashboard(Guid hotelId)
+    public  HotelDashboardData GetHotelInfo(Guid hotelId)
     {
         var hotel =  GetById(hotelId);
         if (hotel == null)
