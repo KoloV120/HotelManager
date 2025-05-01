@@ -42,7 +42,8 @@ public class HotelService : BaseService<Hotel>, IHotelService
                         Number = s.Number,
                         PricePerNight = s.PricePerNight,
                         HotelId = s.HotelId,
-                        Status = s.Status
+                        Status = s.Status,
+                        Type = s.Type
                     })
                     .OrderBy(s => s.Number)
                     .ToList()
@@ -124,7 +125,8 @@ public class HotelService : BaseService<Hotel>, IHotelService
                     Number = b.Room.Number,
                     PricePerNight = b.Room.PricePerNight,
                     HotelId = b.Room.HotelId,
-                    Status = b.Room.Status
+                    Status = b.Room.Status,
+                    Type = b.Room.Type
                 }
 
             });

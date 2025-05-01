@@ -19,6 +19,7 @@
         <div class="col-md-3">
             <div class="card text-white bg-primary mb-3">
                 <div class="card-body">
+    using HotelManager.Data.Models;
                     <h5 class="card-title">Total Guests</h5>
                     <p class="card-text display-6">@Model.TotalGuests</p>
                 </div>
@@ -86,7 +87,7 @@
                                 <option value="">Select a room...</option>
                                 @foreach (var room in Model.ListOfAvailableRooms)
                                 {
-                                    <option value="@room.Id">Room @room.Number - $@room.PricePerNight/night</option>
+                                    <option value="@room.Id">room @room.Number  @room.Type - $@room.PricePerNight/night</option>
                                 }
                             </select>
                         </div>

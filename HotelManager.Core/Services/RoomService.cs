@@ -53,7 +53,8 @@ public class RoomService : BaseService<Room>, IRoomService
                 Number = r.Number,
                 PricePerNight = r.PricePerNight,
                 Status = r.Status,
-                HotelId = r.HotelId
+                HotelId = r.HotelId,
+                Type = r.Type
             },
             new[] { numberOrderClause });
     }

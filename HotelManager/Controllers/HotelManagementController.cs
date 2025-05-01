@@ -34,7 +34,7 @@ public class HotelManagementController : Controller
             var dashboardData = _hotelService.GetHotelDashboard(id);
             var guests = _guestService.GetAllMinified();
             var rooms = _roomService.GetAllMinified()
-                .Where(r => r.HotelId == id && r.Status == "available");
+                .Where(r => r.HotelId == id && r.Status != "available");
 
             var viewModel = new HotelManagerViewModel
             {
@@ -58,7 +58,8 @@ public class HotelManagementController : Controller
                 {
                     Id = r.Id,
                     Number = r.Number,
-                    PricePerNight = r.PricePerNight
+                    PricePerNight = r.PricePerNight,
+                    Type = r.Type
                 }).ToList()
             };
 
