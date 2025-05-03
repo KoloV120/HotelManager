@@ -7,7 +7,6 @@ using HotelManager.Core.Projections.Rooms;
 using HotelManager.Data.Models;
 using HotelManager.Data.Repositories;
 using HotelManager.Data.Sorting;
-using HotelManager.Models;
 
 namespace HotelManager.Core.Services;
 
@@ -102,20 +101,22 @@ public class HotelService : BaseService<Hotel>, IHotelService
             .Sum(b => b.Room.PricePerNight * (b.CheckOut - b.CheckIn).Days);
     }
 
-    public IEnumerable<RecentBookingInfo> GetRecentBookings(Guid hotelId, int count = 5)
+    public IEnumerable<RecentBookingProjection> GetRecentBookings(Guid hotelId, int count = 5)
     {
         var bookings = _bookingService.GetAll();
     return bookings
         .Where(b => b.Room.HotelId == hotelId)
         .OrderByDescending(b => b.CheckIn)
         .Take(count)
-        .Select(b => new RecentBookingInfo
+        .Select(b => new RecentBookingProjection
         {
-            GuestName = b.Guest.Name,
-            RoomNumber = b.Room.Number,
+            Id = b.Id,
             CheckIn = b.CheckIn,
-            CheckOut = b.CheckOut
+            CheckOut = b.CheckOut,
+            GuestName = b.Guest.Name,
+            RoomNumber = b.Room.Number
         });
+
     }
 
     public  HotelDashboardData GetHotelInfo(Guid hotelId)

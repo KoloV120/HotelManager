@@ -41,7 +41,13 @@ public class HotelManagementController : Controller
                 AvailableRooms = dashboardData.AvailableRooms.Count(),
                 ActiveBookings = dashboardData.ActiveBookings.Count(),
                 MonthlyRevenue = dashboardData.MonthlyRevenue,
-                RecentBookings = dashboardData.RecentBookings.ToList(),
+                RecentBookings = dashboardData.RecentBookings.Select(b => new RecentBookingInfo
+                {
+                    CheckIn = b.CheckIn,
+                    CheckOut = b.CheckOut,
+                    GuestName = b.GuestName,
+                    RoomNumber = b.RoomNumber
+                }).ToList(),
                 ListOfAvailableRooms = dashboardData.AvailableRooms.Select(r => new RoomSelectListItem
                 {
                     Id = r.Id,
