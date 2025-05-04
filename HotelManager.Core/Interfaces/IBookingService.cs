@@ -8,5 +8,5 @@ public interface IBookingService : IService<Booking>
 {
     IEnumerable<BookingGeneralInfoProjection> GetAll();
     IEnumerable<BookingMinifiedInfoProjection> GetAllMinified();
-    Task<bool> IsRoomAvailable(Guid roomId, DateTime checkIn, DateTime checkOut);
+    bool IsRoomAvailable(Guid roomId, DateTime checkIn, DateTime checkOut);
 }

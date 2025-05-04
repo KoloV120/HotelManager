@@ -120,14 +120,14 @@ public class HotelManagementController : Controller
     {
         if (!ModelState.IsValid)
         {
-            SetBookingModalTempData(model.GuestId,"Invalid booking details");
-            return RedirectToAction(nameof(ManageHotel), new { id = model.HotelId });
+           TempData["Error"] = $"Invalid booking details";
+           return RedirectToAction(nameof(ManageHotel), new { id = model.HotelId });
         }
         var guest = _guestService.GetById(model.GuestId);
         var room = _roomService.GetById(model.RoomId);
         if (guest == null || room == null)
         {
-            SetBookingModalTempData(model.GuestId,"Guest or room not found", guest?.Name);
+            TempData["Error"] = $"could not find guest or room with the provided IDs.";
             return RedirectToAction(nameof(ManageHotel), new { id = model.HotelId });
         }
 
@@ -141,7 +141,11 @@ public class HotelManagementController : Controller
                 Guest = guest,
                 Room = room
             };
-
+            if(_bookingService.IsRoomAvailable(room.Id, booking.CheckOut, booking.CheckIn))
+            {
+                TempData["Error"] = $"Room {room.Number} is already booked for the selected dates.";
+                return RedirectToAction(nameof(ManageHotel), new { id = model.HotelId });
+            }
             _bookingService.Create(booking);
             TempData["Success"] = "Booking created successfully!";
             TempData.Remove("ShowBookingModal");
@@ -150,7 +154,7 @@ public class HotelManagementController : Controller
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error creating booking for guest {GuestId}", model.GuestId);
-            SetBookingModalTempData(model.GuestId,"There was an error", guest.Name);
+            TempData["Error"] = $"Failed to create booking: {ex.Message}";
             return RedirectToAction(nameof(ManageHotel), new { id = model.HotelId });
         }
     }

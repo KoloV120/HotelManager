@@ -78,8 +78,8 @@ public class HotelService : BaseService<Hotel>, IHotelService
     {
         var rooms = _roomService.GetAll();
         return rooms.Where(r => 
-            r.HotelId == hotelId && 
-            !r.Bookings.Any(b => b.CheckOut >= DateTime.Now));
+            r.HotelId == hotelId && r.Bookings.Where(b => 
+                b.CheckIn > DateTime.Now || b.CheckOut < DateTime.Now).Any());
     }
 
     public IEnumerable<BookingGeneralInfoProjection> GetActiveBookings(Guid hotelId)

@@ -50,9 +50,11 @@ public class BookingService : BaseService<Booking>, IBookingService
         throw new NotImplementedException();
     }
 
-    public Task<bool> IsRoomAvailable(Guid roomId, DateTime checkIn, DateTime checkOut)
+    public bool IsRoomAvailable(Guid roomId, DateTime checkIn, DateTime checkOut)
     {
-        throw new NotImplementedException();
+        var bookings = GetAll().Where(b => b.Room.Id == roomId).ToList();
+        return !bookings.Any(b =>
+        checkIn < b.CheckOut && checkOut > b.CheckIn);
     }
-    }
+} 
 
