@@ -3,6 +3,7 @@ using HotelManager.Core.Interfaces;
 using HotelManager.Models;
 using System.Diagnostics;
 using HotelManager.Data.Models;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace HotelManager.Controllers;
 
@@ -27,7 +28,13 @@ public class HotelManagementController : Controller
         _guestService = guestService;
         _logger = logger;
     }
-
+    private void SetBookingModalTempData(Guid guestId, string? guestName = null,string? errorMessage = null)
+    {
+        TempData["Error"] = errorMessage;
+        TempData["ShowBookingModal"] = true;
+        TempData["GuestId"] = guestId;
+        TempData["GuestName"] = guestName ?? _guestService.GetById(guestId)?.Name;
+    }
     public IActionResult ManageHotel(Guid id)
     {
         try
@@ -68,9 +75,9 @@ public class HotelManagementController : Controller
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error managing hotel {HotelId}", id);
-            return View("Error", new ErrorViewModel 
-            { 
-                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier 
+            return View("Error", new ErrorViewModel
+            {
+                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
             });
         }
     }
@@ -80,7 +87,8 @@ public class HotelManagementController : Controller
     {
         if (!ModelState.IsValid)
         {
-            return BadRequest(ModelState);
+            TempData["Error"] = "Invalid guest details";
+            return RedirectToAction(nameof(ManageHotel), new { id = model.HotelId });
         }
 
         try
@@ -93,13 +101,17 @@ public class HotelManagementController : Controller
             };
 
             _guestService.Create(guest);
-            
-            return Json(new { success = true, guestId = guest.Id });
+
+            // Store guest info and show booking modal flag
+            SetBookingModalTempData(guest.Id, guest.Name);
+
+            return RedirectToAction(nameof(ManageHotel), new { id = model.HotelId });
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error adding guest");
-            return BadRequest("Error creating guest");
+            ModelState.AddModelError("", "Error creating guest");
+            return View("ManageHotel", _hotelService.GetHotelInfo(model.HotelId));
         }
     }
 
@@ -108,13 +120,15 @@ public class HotelManagementController : Controller
     {
         if (!ModelState.IsValid)
         {
-            return BadRequest(ModelState);
+            SetBookingModalTempData(model.GuestId,"Invalid booking details");
+            return RedirectToAction(nameof(ManageHotel), new { id = model.HotelId });
         }
         var guest = _guestService.GetById(model.GuestId);
         var room = _roomService.GetById(model.RoomId);
-        if(guest == null || room == null)
+        if (guest == null || room == null)
         {
-            return BadRequest("Guest or Room ID is invalid.");
+            SetBookingModalTempData(model.GuestId,"Guest or room not found", guest?.Name);
+            return RedirectToAction(nameof(ManageHotel), new { id = model.HotelId });
         }
 
         try
@@ -124,21 +138,20 @@ public class HotelManagementController : Controller
                 CheckIn = model.CheckIn,
                 CheckOut = model.CheckOut,
                 Status = "confirmed",
-                Guest  = guest,
+                Guest = guest,
                 Room = room
             };
 
             _bookingService.Create(booking);
-            
+            TempData["Success"] = "Booking created successfully!";
+            TempData.Remove("ShowBookingModal");
             return RedirectToAction(nameof(ManageHotel), new { id = model.HotelId });
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error adding booking");
-            return View("Error", new ErrorViewModel 
-            { 
-                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier 
-            });
+            _logger.LogError(ex, "Error creating booking for guest {GuestId}", model.GuestId);
+            SetBookingModalTempData(model.GuestId,"There was an error", guest.Name);
+            return RedirectToAction(nameof(ManageHotel), new { id = model.HotelId });
         }
     }
 

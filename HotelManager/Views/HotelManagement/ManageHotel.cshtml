@@ -6,7 +6,12 @@
 
 <div class="container mt-4">
     <h2 class="mb-4">🏨 @ViewData["HotelName"]</h2>
-
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["Error"]
+        </div>
+    }
     <!-- Navigation Buttons -->
     <div class="mb-5">
         <a asp-controller="Guest" asp-action="Index" class="btn btn-primary me-2">Manage Guests</a>
@@ -65,8 +70,9 @@
                     <h5 class="modal-title">Step 1: Add Guest Information</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <form id="addGuestForm">
+                <form id="addGuestForm" method="post" asp-controller="HotelManagement" asp-action="AddGuest">
                     <div class="modal-body">
+                        <input type="hidden" name="HotelId" value="@ViewContext.RouteData.Values["id"]" />
                         <div class="mb-3">
                             <label class="form-label">Guest Name</label>
                             <input type="text" class="form-control" name="Name" required>
@@ -94,12 +100,11 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Step 2: Create Booking</h5>
+                    <h5 class="modal-title">Step 2: Create Booking @TempData["GuestName"]</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <form asp-controller="HotelManagement" asp-action="AddBooking" method="post">
                     <div class="modal-body">
-                        <input type="hidden" name="HotelId" value="@ViewContext.RouteData.Values["id"]" />
                         <input type="hidden" id="GuestId" name="GuestId" />
 
                         <div class="alert alert-info">
@@ -172,46 +177,31 @@
 
 @section Scripts {
     <script>
-        document.getElementById('addGuestForm').addEventListener('submit', async function (e) {
-            e.preventDefault();
-
-            const formData = new FormData(this);
-            try {
-                const response = await fetch('@Url.Action("AddGuest", "HotelManagement")', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                if (response.ok) {
-                    const result = await response.json();
-                    document.getElementById('GuestId').value = result.guestId;
-                    document.getElementById('guestName').textContent = formData.get('Name');
-
-                    // Hide guest modal and show booking modal
-                    bootstrap.Modal.getInstance(document.getElementById('addGuestModal')).hide();
-                    new bootstrap.Modal(document.getElementById('addBookingModal')).show();
-                } else {
-                    alert('Error creating guest. Please try again.');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Error creating guest. Please try again.');
-            }
-        });
-
         // Date validation
-        const checkInInput = document.querySelector('input[name="CheckIn"]');
-        const checkOutInput = document.querySelector('input[name="CheckOut"]');
+        document.addEventListener("DOMContentLoaded", function () {
+            const checkInInput = document.querySelector('input[name="CheckIn"]');
+            const checkOutInput = document.querySelector('input[name="CheckOut"]');
 
-        checkInInput.addEventListener('change', function () {
-            const checkInDate = new Date(this.value);
-            const minCheckOut = new Date(checkInDate);
-            minCheckOut.setDate(minCheckOut.getDate() + 1);
+            if (checkInInput && checkOutInput) {
+                checkInInput.addEventListener('change', function () {
+                    const checkInDate = new Date(this.value);
+                    const minCheckOut = new Date(checkInDate);
+                    minCheckOut.setDate(minCheckOut.getDate() + 1);
 
-            checkOutInput.min = minCheckOut.toISOString().split('T')[0];
-            if (new Date(checkOutInput.value) <= checkInDate) {
-                checkOutInput.value = minCheckOut.toISOString().split('T')[0];
+                    checkOutInput.min = minCheckOut.toISOString().split('T')[0];
+                    if (new Date(checkOutInput.value) <= checkInDate) {
+                        checkOutInput.value = minCheckOut.toISOString().split('T')[0];
+                    }
+                });
             }
-        });
+
+            @if (TempData["ShowBookingModal"] != null)
+                {
+                    @:document.getElementById('GuestId').value = '@TempData["GuestId"]';
+                @:document.getElementById('guestName').textContent = '@TempData["GuestName"]';
+                @:var bookingModal = new bootstrap.Modal(document.getElementById('addBookingModal'));
+                @:bookingModal.show();
+            }
+                        });
     </script>
 }

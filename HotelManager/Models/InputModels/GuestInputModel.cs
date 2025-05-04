@@ -15,5 +15,7 @@ public class GuestInputModel
     [Required]
     [Phone]
     public string Phone { get; set; } = string.Empty;
+    [Required]
+    public Guid HotelId { get; set; }
 }
 
