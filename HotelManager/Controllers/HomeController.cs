@@ -24,7 +24,7 @@ public class HomeController : Controller
         try
         {
             var hotels = _hotelService.GetAll();
-            
+
             var viewModel = new DashboardViewModel
             {
                 Hotels = hotels.Select(h => new HotelCardViewModel
@@ -74,6 +74,28 @@ public class HomeController : Controller
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error adding hotel");
+            return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+    }
+
+    [HttpPost]
+    public IActionResult DeleteHotel([FromForm] Guid id)
+    {
+        try
+        {
+            // Attempt to delete the hotel using the service
+            bool success = _hotelService.Delete(id);
+
+            if (!success)
+            {
+                ModelState.AddModelError("", "Failed to delete hotel");
+            }
+
+            return RedirectToAction(nameof(Index));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error deleting hotel with ID {HotelId}", id);
             return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
