@@ -83,6 +83,38 @@ public class HotelManagementController : Controller
     }
 
     [HttpPost]
+public IActionResult AddRoom(RoomInputModel model)
+{
+    if (!ModelState.IsValid)
+    {
+        TempData["Error"] = "Invalid room details.";
+        return RedirectToAction("ManageHotel", new { id = model.HotelId });
+    }
+
+    try
+    {
+        var room = new Room
+        {
+            Id = Guid.NewGuid(),
+            HotelId = model.HotelId,
+            Number = model.Number,
+            Type = model.Type,
+            PricePerNight = model.PricePerNight,
+            Status = "Available"
+        };
+
+        _roomService.Create(room); // Assuming you have a service to handle room operations
+        return RedirectToAction("ManageHotel", new { id = model.HotelId });
+    }
+    catch (Exception ex)
+    {
+        _logger.LogError(ex, "Error adding room to hotel with ID {HotelId}", model.HotelId);
+        TempData["Error"] = "An error occurred while adding the room.";
+        return RedirectToAction("ManageHotel", new { id = model.HotelId });
+    }
+}
+
+    [HttpPost]
     public IActionResult AddGuest([FromForm] GuestInputModel model)
     {
         if (!ModelState.IsValid)

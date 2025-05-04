@@ -5,13 +5,59 @@
 }
 
 <div class="container mt-4">
-    <h2 class="mb-4">🏨 @ViewData["HotelName"]</h2>
+    <h2 class="mb-4 d-flex align-items-center">
+        🏨 @ViewData["HotelName"]
+        <button type="button" class="btn btn-outline-dark btn-sm ms-3" data-bs-toggle="modal"
+            data-bs-target="#addRoomModal">
+            <i class="bi bi-plus-circle"></i> New Room
+        </button>
+    </h2>
+
     @if (TempData["Error"] != null)
     {
         <div class="alert alert-danger">
             @TempData["Error"]
         </div>
     }
+
+<!-- Add Room Modal -->
+<div class="modal fade" id="addRoomModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add a room to @ViewData["HotelName"]</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" asp-controller="HotelManagement" asp-action="AddRoom">
+                <div class="modal-body">
+                    <input type="hidden" name="HotelId" value="@ViewContext.RouteData.Values["id"]" />
+                    <div class="mb-3">
+                        <label class="form-label">Room Number</label>
+                        <input type="text" class="form-control" name="Number" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Room Type</label>
+                        <select name="Type" class="form-select" required>
+                            <option value="">Select a type...</option>
+                            <option value="Single">Single</option>
+                            <option value="Double">Double</option>
+                            <option value="Suite">Suite</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Price Per Night</label>
+                        <input type="number" class="form-control" name="PricePerNight" step="0.01" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Room</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
     <!-- Navigation Buttons -->
     <div class="mb-5">
         <a asp-controller="Guest" asp-action="Index" class="btn btn-primary me-2">Manage Guests</a>
@@ -30,7 +76,7 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card text-white bg-success mb-3">
+            <div class="card text-white bg-secondary mb-3">
                 <div class="card-body">
                     <h5 class="card-title">Rooms Available</h5>
                     <p class="card-text display-6">@Model.AvailableRooms</p>
@@ -38,7 +84,7 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card text-white bg-warning mb-3">
+            <div class="card text-white bg-success mb-3">
                 <div class="card-body">
                     <h5 class="card-title">Active Bookings</h5>
                     <p class="card-text display-6">@Model.ActiveBookings</p>
@@ -46,7 +92,7 @@
             </div>
         </div>
         <div class="col-md-3">
-            <div class="card text-white bg-dark mb-3">
+            <div class="card text-white bg-warning mb-3">
                 <div class="card-body">
                     <h5 class="card-title">Monthly Revenue</h5>
                     <p class="card-text display-6">$@Model.MonthlyRevenue</p>
@@ -57,7 +103,8 @@
 
     <!-- Add Booking Button -->
     <div class="mt-4 mb-5">
-        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addGuestModal">
+        <button type="button" class="btn border border-dark btn-light" data-bs-toggle="modal"
+            data-bs-target="#addGuestModal">
             <i class="bi bi-plus-circle"></i> New Booking
         </button>
     </div>
@@ -202,6 +249,6 @@
                 @:var bookingModal = new bootstrap.Modal(document.getElementById('addBookingModal'));
                 @:bookingModal.show();
             }
-                        });
+                            });
     </script>
 }
