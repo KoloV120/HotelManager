@@ -28,6 +28,13 @@ public class HotelManagementController : Controller
         _guestService = guestService;
         _logger = logger;
     }
+    private void SetBookingModalTempData(Guid guestId, string? guestName = null,string? errorMessage = null)
+    {
+        TempData["Error"] = errorMessage;
+        TempData["ShowBookingModal"] = true;
+        TempData["GuestId"] = guestId;
+        TempData["GuestName"] = guestName ?? _guestService.GetById(guestId)?.Name;
+    }
     public IActionResult ManageHotel(Guid id)
     {
         try
@@ -74,6 +81,84 @@ public class HotelManagementController : Controller
             });
         }
     }
+
+    [HttpPost]
+    public IActionResult AddGuest([FromForm] GuestInputModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            TempData["Error"] = "Invalid guest details";
+            return RedirectToAction(nameof(ManageHotel), new { id = model.HotelId });
+        }
+
+        try
+        {
+            var guest = new Guest
+            {
+                Name = model.Name,
+                Email = model.Email,
+                Phone = model.Phone
+            };
+
+            _guestService.Create(guest);
+
+            // Store guest info and show booking modal flag
+            SetBookingModalTempData(guest.Id, guest.Name);
+
+            return RedirectToAction(nameof(ManageHotel), new { id = model.HotelId });
+        }
+        catch (Exception ex)
+        {
+           TempData["Error"] = "Failed to create guest: " + ex.Message;
+           return View("ManageHotel", _hotelService.GetHotelInfo(model.HotelId));
+        }
+    }
+
+    [HttpPost]
+    public IActionResult AddBooking([FromForm] BookingInputModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+           SetBookingModalTempData(model.GuestId,"Invalid booking details");
+           return RedirectToAction(nameof(ManageHotel), new { id = model.HotelId });
+        }
+        var guest = _guestService.GetById(model.GuestId);
+        var room = _roomService.GetById(model.RoomId);
+        if (guest == null || room == null)
+        {
+            TempData["Error"] = $"could not find guest or room with the provided IDs.";
+            TempData.Remove("ShowBookingModal");
+            return RedirectToAction(nameof(ManageHotel), new { id = model.HotelId });
+        }
+
+        try
+        {
+            var booking = new Booking
+            {
+                CheckIn = model.CheckIn,
+                CheckOut = model.CheckOut,
+                Status = "confirmed",
+                Guest = guest,
+                Room = room
+            };
+            if(_bookingService.IsRoomAvailable(room.Id, booking.CheckOut, booking.CheckIn))
+            {
+                SetBookingModalTempData(model.GuestId,$"Room {room.Number} is already booked for the selected dates."); 
+                return RedirectToAction(nameof(ManageHotel), new { id = model.HotelId });
+            }
+            _bookingService.Create(booking);
+            TempData["Success"] = "Booking created successfully!";
+            TempData.Remove("ShowBookingModal");
+            return RedirectToAction(nameof(ManageHotel), new { id = model.HotelId });
+        }
+        catch (Exception ex)
+        {
+            TempData["Error"] = $"Failed to create booking: {ex.Message}";
+            TempData.Remove("ShowBookingModal");
+            return RedirectToAction(nameof(ManageHotel), new { id = model.HotelId });
+        }
+    }
+
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
