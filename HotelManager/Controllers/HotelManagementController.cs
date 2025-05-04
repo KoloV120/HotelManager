@@ -109,9 +109,8 @@ public class HotelManagementController : Controller
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error adding guest");
-            ModelState.AddModelError("", "Error creating guest");
-            return View("ManageHotel", _hotelService.GetHotelInfo(model.HotelId));
+           TempData["Error"] = "Failed to create guest: " + ex.Message;
+           return View("ManageHotel", _hotelService.GetHotelInfo(model.HotelId));
         }
     }
 
@@ -120,7 +119,7 @@ public class HotelManagementController : Controller
     {
         if (!ModelState.IsValid)
         {
-           TempData["Error"] = $"Invalid booking details";
+           SetBookingModalTempData(model.GuestId,"Invalid booking details");
            return RedirectToAction(nameof(ManageHotel), new { id = model.HotelId });
         }
         var guest = _guestService.GetById(model.GuestId);
@@ -128,6 +127,7 @@ public class HotelManagementController : Controller
         if (guest == null || room == null)
         {
             TempData["Error"] = $"could not find guest or room with the provided IDs.";
+            TempData.Remove("ShowBookingModal");
             return RedirectToAction(nameof(ManageHotel), new { id = model.HotelId });
         }
 
@@ -143,7 +143,7 @@ public class HotelManagementController : Controller
             };
             if(_bookingService.IsRoomAvailable(room.Id, booking.CheckOut, booking.CheckIn))
             {
-                TempData["Error"] = $"Room {room.Number} is already booked for the selected dates.";
+                SetBookingModalTempData(model.GuestId,$"Room {room.Number} is already booked for the selected dates."); 
                 return RedirectToAction(nameof(ManageHotel), new { id = model.HotelId });
             }
             _bookingService.Create(booking);
@@ -153,8 +153,8 @@ public class HotelManagementController : Controller
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error creating booking for guest {GuestId}", model.GuestId);
             TempData["Error"] = $"Failed to create booking: {ex.Message}";
+            TempData.Remove("ShowBookingModal");
             return RedirectToAction(nameof(ManageHotel), new { id = model.HotelId });
         }
     }
