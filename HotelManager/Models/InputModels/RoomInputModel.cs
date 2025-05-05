@@ -7,12 +7,10 @@ public class RoomInputModel
     public Guid Id { get; set; }
 
     [Required]
-    [StringLength(100)]
     public int Number { get; set; }
     [Required]
     public string Type { get; set; } = string.Empty;   // "single", "double", "suite"
     [Required]
-    [StringLength(100)]
     public decimal PricePerNight { get; set; }
 
     public string Status { get; set; } = string.Empty;// "available", "booked", "maintenance"

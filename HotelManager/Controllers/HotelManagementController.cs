@@ -28,9 +28,9 @@ public class HotelManagementController : Controller
         _guestService = guestService;
         _logger = logger;
     }
-    private void SetBookingModalTempData(Guid guestId, string? guestName = null,string? errorMessage = null)
+    private void SetBookingModalTempData(Guid guestId,string? errorMessage = null, string? guestName = null)
     {
-        TempData["Error"] = errorMessage;
+        TempData["Error2"] = errorMessage;
         TempData["ShowBookingModal"] = true;
         TempData["GuestId"] = guestId;
         TempData["GuestName"] = guestName ?? _guestService.GetById(guestId)?.Name;
@@ -91,6 +91,13 @@ public IActionResult AddRoom(RoomInputModel model)
         return RedirectToAction("ManageHotel", new { id = model.HotelId });
     }
 
+    var hotel = _hotelService.GetById(model.HotelId);
+    if (hotel == null)
+    {
+        TempData["Error"] = "Invalid hotel selection.";
+        return RedirectToAction(nameof(ManageHotel), new { id = model.HotelId });
+    }
+
     try
     {
         var room = new Room
@@ -135,7 +142,7 @@ public IActionResult AddRoom(RoomInputModel model)
             _guestService.Create(guest);
 
             // Store guest info and show booking modal flag
-            SetBookingModalTempData(guest.Id, guest.Name);
+            SetBookingModalTempData(guest.Id,null, guest.Name);
 
             return RedirectToAction(nameof(ManageHotel), new { id = model.HotelId });
         }
@@ -173,7 +180,7 @@ public IActionResult AddRoom(RoomInputModel model)
                 Guest = guest,
                 Room = room
             };
-            if(_bookingService.IsRoomAvailable(room.Id, booking.CheckOut, booking.CheckIn))
+            if(!_bookingService.IsRoomAvailable(room.Id, booking.CheckOut, booking.CheckIn))
             {
                 SetBookingModalTempData(model.GuestId,$"Room {room.Number} is already booked for the selected dates."); 
                 return RedirectToAction(nameof(ManageHotel), new { id = model.HotelId });

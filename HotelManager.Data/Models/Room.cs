@@ -16,7 +16,7 @@ public class Room : IIdentifiable
     public Guid HotelId { get; set; }
 
     // Navigation properties
-    public Hotel Hotel { get; set; } = new Hotel();
+    public Hotel ?Hotel { get; set; }
 
     public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
 }

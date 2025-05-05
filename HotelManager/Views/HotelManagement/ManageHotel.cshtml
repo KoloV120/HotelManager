@@ -33,7 +33,7 @@
                     <input type="hidden" name="HotelId" value="@ViewContext.RouteData.Values["id"]" />
                     <div class="mb-3">
                         <label class="form-label">Room Number</label>
-                        <input type="text" class="form-control" name="Number" required>
+                        <input type="number" class="form-control" name="Number" required>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Room Type</label>
@@ -152,11 +152,19 @@
                 </div>
                 <form asp-controller="HotelManagement" asp-action="AddBooking" method="post">
                     <div class="modal-body">
+                        <input type="hidden" name="HotelId" value="@ViewContext.RouteData.Values["id"]" />
                         <input type="hidden" id="GuestId" name="GuestId" />
 
                         <div class="alert alert-info">
                             Booking for: <span id="guestName"></span>
                         </div>
+
+                        @if (TempData["Error2"] != null)
+                        {
+                            <div class="alert alert-danger">
+                                @TempData["Error2"]
+                            </div>
+                        }
 
                         <div class="mb-3">
                             <label class="form-label">Room</label>
@@ -166,7 +174,7 @@
                                     <option value="">Select a room...</option>
                                     @foreach (var room in Model.ListOfAvailableRooms)
                                     {
-                                        <option value="@room.Id">@room.Number - @room.Type</option>
+                                        <option value="@room.Id">@room.Number - @room.Type-@room.PricePerNight</option>
                                     }
                                 }
                                 else
