@@ -52,9 +52,14 @@ public class BookingService : BaseService<Booking>, IBookingService
 
     public bool IsRoomAvailable(Guid roomId, DateTime checkIn, DateTime checkOut)
     {
-        var bookings = GetAll().Where(b => b.Room.Id == roomId).ToList();
-        return !bookings.Any(b =>
-        checkIn < b.CheckOut && checkOut > b.CheckIn);
+        var conflictingBooking = GetAll()
+        .FirstOrDefault(b => b.Room.Id == roomId &&
+                             checkIn < b.CheckOut &&
+                             checkOut > b.CheckIn);
+
+        // Return true if no conflicting booking is found
+        return conflictingBooking == null;
     }
-} 
+
+}
 
