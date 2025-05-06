@@ -99,7 +99,7 @@ public class RoomController : Controller
 
             _roomService.Update(room);
             TempData["Success"] = "Room updated successfully!";
-            return RedirectToAction(nameof(Index), new { id = model.HotelId });
+            return RedirectToAction(nameof(Index), new { id = room.HotelId });
         }
         catch (Exception ex)
         {
