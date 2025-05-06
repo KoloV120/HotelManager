@@ -1,8 +1,14 @@
 using HotelManager.Data;
 using Microsoft.EntityFrameworkCore;
 using HotelManager.Core.Configuration;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Set the default culture to en-US
+var cultureInfo = new CultureInfo("en-US");
+CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+CultureInfo.DefaultThreadCurrentUICulture = cultureInfo; 
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -40,6 +46,11 @@ app.MapControllerRoute(
     name: "hotelManagement",
     pattern: "HotelManagement/ManageHotel/{id}",
     defaults: new { controller = "HotelManagement", action = "ManageHotel" });
+
+ app.MapControllerRoute(
+     name: "roomManagement",
+     pattern: "Room/Index/{id}",
+     defaults: new { controller = "Room", action = "Index" });
 
 app.MapControllerRoute(
     name: "default",

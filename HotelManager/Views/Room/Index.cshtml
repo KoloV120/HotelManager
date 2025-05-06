@@ -1,0 +1,91 @@
+@model List<HotelManager.Models.RoomViewModel>
+
+@{
+    ViewData["Title"] = "Manage Rooms";
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4">Manage Rooms</h2>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["Error"]
+        </div>
+    }
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["Success"]
+        </div>
+    }
+
+    <!-- Add Room Button -->
+    <button type="button" class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#addRoomModal">
+        <i class="bi bi-plus-circle"></i> Add Room
+    </button>
+
+    <!-- Room Table -->
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Number</th>
+                <th>Type</th>
+                <th>Price Per Night</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var room in Model)
+            {
+                <tr>
+                    <td>@room.Number</td>
+                    <td>@room.Type</td>
+                    <td>@room.PricePerNight</td>
+                    <td>@room.Status</td>
+                    <td>
+                        <form asp-controller="Room" asp-action="DeleteRoom" method="post" class="d-inline">
+                            <input type="hidden" name="id" value="@room.Id" />
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Add Room Modal -->
+<div class="modal fade" id="addRoomModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Room</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form asp-controller="Room" asp-action="AddRoom" method="post">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Room Number</label>
+                        <input type="number" class="form-control" name="Number" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Type</label>
+                        <input type="text" class="form-control" name="Type" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Price Per Night</label>
+                        <input type="number" class="form-control" name="PricePerNight" step="0.01" required />
+                    </div>
+                    <input type="hidden" name="HotelId" value="@ViewData["HotelId"]" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Add Room</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

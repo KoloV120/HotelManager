@@ -57,7 +57,7 @@
     <!-- Navigation Buttons -->
     <div class="mb-5">
         <a asp-controller="Guest" asp-action="Index" class="btn btn-primary me-2">Manage Guests</a>
-        <a asp-controller="Room" asp-action="Index" class="btn btn-secondary me-2">Manage Rooms</a>
+        <a asp-controller="Room" asp-action="Index"  asp-route-id="@ViewContext.RouteData.Values["id"]" class="btn btn-secondary me-2">Manage Rooms</a>
         <a asp-controller="Booking" asp-action="Index" class="btn btn-success me-2">Manage Bookings</a>
     </div>
 
@@ -115,7 +115,7 @@
                 </div>
                 <form id="addGuestForm" method="post" asp-controller="HotelManagement" asp-action="AddGuest">
                     <div class="modal-body">
-                        <input type="hidden" name="HotelId" value="@ViewContext.RouteData.Values["id"]" />
+                        <input type="hidden" name="HotelId" value="@ViewData["HotelId"]" />
                         <div class="mb-3">
                             <label class="form-label">Guest Name</label>
                             <input type="text" class="form-control" name="Name" required>
