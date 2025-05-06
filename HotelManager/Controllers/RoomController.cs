@@ -18,7 +18,7 @@ public class RoomController : Controller
     public IActionResult Index(Guid id)
     {
         ViewData["HotelId"] = id; // Pass the HotelId to the view
-        var rooms = _roomService.GetAll();
+        var rooms = _roomService.GetAllByHotelId(id);
         var viewModel = rooms.Select(r => new RoomViewModel
         {
             Id = r.Id,

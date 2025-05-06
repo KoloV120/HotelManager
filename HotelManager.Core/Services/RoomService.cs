@@ -41,6 +41,34 @@ public class RoomService : BaseService<Room>, IRoomService
             new[] { numberOrderClause });
     }
 
+    public IEnumerable<RoomGeneralInfoProjection> GetAllByHotelId(Guid id)
+    {
+        var numberOrderClause = new OrderClause<Room> { Expression = r => r.Number };
+
+    return this.Repository.GetMany(
+        r => r.HotelId == id, // Filter by HotelId
+        r => new RoomGeneralInfoProjection
+        {
+            Id = r.Id,
+            Number = r.Number,
+            Type = r.Type,
+            PricePerNight = r.PricePerNight,
+            Status = r.Status,
+            HotelId = r.HotelId,
+            Bookings = r.Bookings
+                .Select(b => new BookingMinifiedInfoProjection
+                {
+                    Id = b.Id,
+                    CheckIn = b.CheckIn,
+                    CheckOut = b.CheckOut,
+                })
+                .OrderBy(b => b.CheckIn)
+                .ToList()
+        },
+        new[] { numberOrderClause } // Order by room number
+    );
+    }
+
     public IEnumerable<RoomMinifiedInfoProjection> GetAllMinified()
     {
         var numberOrderClause = new OrderClause<Room> { Expression = r => r.Number };
