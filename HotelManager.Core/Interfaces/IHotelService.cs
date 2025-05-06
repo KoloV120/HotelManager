@@ -17,5 +17,5 @@ public interface IHotelService : IService<Hotel>
     IEnumerable<RecentBookingProjection> GetRecentBookings(Guid hotelId, int count = 5);
     HotelDashboardData GetHotelInfo(Guid hotelId);
     int GetRoomsPerFloor(Guid hotelId);
-    IEnumerable<Room> GetAllRooms(Guid hotelId);
+    IEnumerable<RoomGeneralInfoProjection> GetAllRooms(Guid hotelId);
 }

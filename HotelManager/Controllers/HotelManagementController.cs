@@ -102,8 +102,9 @@ public class HotelManagementController : Controller
         {
             int RoomsPerFloor = _hotelService.GetRoomsPerFloor(model.HotelId);
             int RoomsInHotel = _hotelService.GetAllRooms(model.HotelId).Count();
+            _logger.LogDebug("RoomsInHotel for HotelId {HotelId}: {RoomsInHotel}", model.HotelId, RoomsInHotel);
             int NumberOfRoom = 100 + RoomsInHotel / RoomsPerFloor * 100 + (RoomsInHotel % RoomsPerFloor) + 1;
-            
+
             var room = new Room
             {
                 Id = Guid.NewGuid(),
@@ -113,8 +114,9 @@ public class HotelManagementController : Controller
                 PricePerNight = model.PricePerNight,
                 Status = "Available"
             };
-
+            
             _roomService.Create(room); // Assuming you have a service to handle room operations
+            hotel.Rooms.Add(room);
             return RedirectToAction("ManageHotel", new { id = model.HotelId });
         }
         catch (Exception ex)

@@ -145,12 +145,10 @@ public class HotelService : BaseService<Hotel>, IHotelService
         return hotel.RoomsPerFloor;
     }
 
-    public IEnumerable<Room> GetAllRooms(Guid hotelId)
+    public IEnumerable<RoomGeneralInfoProjection> GetAllRooms(Guid hotelId)
     {
-        var hotel = GetById(hotelId);
-        if (hotel == null)
-            throw new InvalidOperationException($"Hotel with ID {hotelId} not found");
-
-        return hotel.Rooms;
+        var rooms = _roomService.GetAll();
+        return rooms.Where(r => 
+            r.HotelId == hotelId);
     }
 }
