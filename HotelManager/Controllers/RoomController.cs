@@ -71,7 +71,7 @@ public class RoomController : Controller
     public IActionResult DeleteRoom(Guid id)
     {
         try
-        {
+        {   var hotelId = _roomService.GetById(id)?.HotelId;
             var success = _roomService.Delete(id);
             if (!success)
             {
@@ -82,7 +82,7 @@ public class RoomController : Controller
                 TempData["Success"] = "Room deleted successfully!";
             }
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index), new { id = hotelId });
         }
         catch (Exception ex)
         {
