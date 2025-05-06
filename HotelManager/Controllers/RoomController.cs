@@ -8,11 +8,12 @@ namespace HotelManager.Controllers;
 public class RoomController : Controller
 {
     private readonly IRoomService _roomService;
+    private readonly IHotelService _hotelService;
 
-
-    public RoomController(IRoomService roomService)
+    public RoomController(IRoomService roomService, IHotelService hotelService)
     {
         _roomService = roomService;
+        _hotelService = hotelService;
     }
 
     public IActionResult Index(Guid id)
@@ -32,28 +33,35 @@ public class RoomController : Controller
     }
 
     [HttpPost]
-    public IActionResult AddRoom([FromForm] RoomInputModel model)
+    public IActionResult AddRoom(RoomInputModel model)
     {
         if (!ModelState.IsValid)
         {
-            foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
-            {
-            Console.WriteLine(error.ErrorMessage); // Log the validation errors
-            }
             TempData["Error"] = "Invalid room details.";
-            return RedirectToAction(nameof(Index),new { id = model.HotelId });
+            return RedirectToAction(nameof(Index), new { id = model.HotelId });
+        }
+
+        var hotel = _hotelService.GetById(model.HotelId);
+        if (hotel == null)
+        {
+            TempData["Error"] = "Invalid hotel selection.";
+            return RedirectToAction(nameof(Index), new { id = model.HotelId });
         }
 
         try
         {
+            int roomsPerFloor = _hotelService.GetRoomsPerFloor(model.HotelId);
+            int roomsInHotel = _hotelService.GetAllRooms(model.HotelId).Count();
+            int roomNumber = 100 + roomsInHotel / roomsPerFloor * 100 + (roomsInHotel % roomsPerFloor) + 1;
+
             var room = new Room
             {
                 Id = Guid.NewGuid(),
-                Number = model.Number,
+                HotelId = model.HotelId,
+                Number = roomNumber,
                 Type = model.Type,
                 PricePerNight = model.PricePerNight,
-                Status = "available",
-                HotelId = model.HotelId
+                Status = "Available"
             };
 
             _roomService.Create(room);
@@ -62,7 +70,40 @@ public class RoomController : Controller
         }
         catch (Exception ex)
         {
-            TempData["Error"] = $"Failed to add room: {ex.Message}";
+            TempData["Error"] = $"An error occurred while adding the room: {ex.Message}";
+            return RedirectToAction(nameof(Index), new { id = model.HotelId });
+        }
+    }
+
+    [HttpPost]
+    public IActionResult EditRoom(RoomInputModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            TempData["Error"] = "Invalid room details.";
+            return RedirectToAction(nameof(Index), new { id = model.HotelId });
+        }
+
+        try
+        {
+            var room = _roomService.GetById(model.Id);
+            if (room == null)
+            {
+                TempData["Error"] = "Room not found.";
+                return RedirectToAction(nameof(Index), new { id = model.HotelId });
+            }
+
+            room.Number = model.Number;
+            room.Type = model.Type;
+            room.PricePerNight = model.PricePerNight;
+
+            _roomService.Update(room);
+            TempData["Success"] = "Room updated successfully!";
+            return RedirectToAction(nameof(Index), new { id = model.HotelId });
+        }
+        catch (Exception ex)
+        {
+            TempData["Error"] = $"Failed to update room: {ex.Message}";
             return RedirectToAction(nameof(Index), new { id = model.HotelId });
         }
     }
@@ -71,7 +112,8 @@ public class RoomController : Controller
     public IActionResult DeleteRoom(Guid id)
     {
         try
-        {   var hotelId = _roomService.GetById(id)?.HotelId;
+        {
+            var hotelId = _roomService.GetById(id)?.HotelId;
             var success = _roomService.Delete(id);
             if (!success)
             {
