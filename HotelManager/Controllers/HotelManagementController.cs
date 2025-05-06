@@ -28,7 +28,7 @@ public class HotelManagementController : Controller
         _guestService = guestService;
         _logger = logger;
     }
-    private void SetBookingModalTempData(Guid guestId,string? errorMessage = null, string? guestName = null)
+    private void SetBookingModalTempData(Guid guestId, string? errorMessage = null, string? guestName = null)
     {
         TempData["Error2"] = errorMessage;
         TempData["ShowBookingModal"] = true;
@@ -83,43 +83,47 @@ public class HotelManagementController : Controller
     }
 
     [HttpPost]
-public IActionResult AddRoom(RoomInputModel model)
-{
-    if (!ModelState.IsValid)
+    public IActionResult AddRoom(RoomInputModel model)
     {
-        TempData["Error"] = "Invalid room details.";
-        return RedirectToAction("ManageHotel", new { id = model.HotelId });
-    }
-
-    var hotel = _hotelService.GetById(model.HotelId);
-    if (hotel == null)
-    {
-        TempData["Error"] = "Invalid hotel selection.";
-        return RedirectToAction(nameof(ManageHotel), new { id = model.HotelId });
-    }
-
-    try
-    {
-        var room = new Room
+        if (!ModelState.IsValid)
         {
-            Id = Guid.NewGuid(),
-            HotelId = model.HotelId,
-            Number = model.Number,
-            Type = model.Type,
-            PricePerNight = model.PricePerNight,
-            Status = "Available"
-        };
+            TempData["Error"] = "Invalid room details.";
+            return RedirectToAction("ManageHotel", new { id = model.HotelId });
+        }
 
-        _roomService.Create(room); // Assuming you have a service to handle room operations
-        return RedirectToAction("ManageHotel", new { id = model.HotelId });
+        var hotel = _hotelService.GetById(model.HotelId);
+        if (hotel == null)
+        {
+            TempData["Error"] = "Invalid hotel selection.";
+            return RedirectToAction(nameof(ManageHotel), new { id = model.HotelId });
+        }
+
+        try
+        {
+            int RoomsPerFloor = _hotelService.GetRoomsPerFloor(model.HotelId);
+            int RoomsInHotel = _hotelService.GetAllRooms(model.HotelId).Count();
+            int NumberOfRoom = 100 + RoomsInHotel / RoomsPerFloor * 100 + (RoomsInHotel % RoomsPerFloor) + 1;
+            
+            var room = new Room
+            {
+                Id = Guid.NewGuid(),
+                HotelId = model.HotelId,
+                Number = NumberOfRoom,
+                Type = model.Type,
+                PricePerNight = model.PricePerNight,
+                Status = "Available"
+            };
+
+            _roomService.Create(room); // Assuming you have a service to handle room operations
+            return RedirectToAction("ManageHotel", new { id = model.HotelId });
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error adding room to hotel with ID {HotelId}", model.HotelId);
+            TempData["Error"] = "An error occurred while adding the room.";
+            return RedirectToAction("ManageHotel", new { id = model.HotelId });
+        }
     }
-    catch (Exception ex)
-    {
-        _logger.LogError(ex, "Error adding room to hotel with ID {HotelId}", model.HotelId);
-        TempData["Error"] = "An error occurred while adding the room.";
-        return RedirectToAction("ManageHotel", new { id = model.HotelId });
-    }
-}
 
     [HttpPost]
     public IActionResult AddGuest([FromForm] GuestInputModel model)
@@ -142,14 +146,14 @@ public IActionResult AddRoom(RoomInputModel model)
             _guestService.Create(guest);
 
             // Store guest info and show booking modal flag
-            SetBookingModalTempData(guest.Id,null, guest.Name);
+            SetBookingModalTempData(guest.Id, null, guest.Name);
 
             return RedirectToAction(nameof(ManageHotel), new { id = model.HotelId });
         }
         catch (Exception ex)
         {
-           TempData["Error"] = "Failed to create guest: " + ex.Message;
-           return View("ManageHotel", _hotelService.GetHotelInfo(model.HotelId));
+            TempData["Error"] = "Failed to create guest: " + ex.Message;
+            return View("ManageHotel", _hotelService.GetHotelInfo(model.HotelId));
         }
     }
 
@@ -158,8 +162,8 @@ public IActionResult AddRoom(RoomInputModel model)
     {
         if (!ModelState.IsValid)
         {
-           SetBookingModalTempData(model.GuestId,"Invalid booking details");
-           return RedirectToAction(nameof(ManageHotel), new { id = model.HotelId });
+            SetBookingModalTempData(model.GuestId, "Invalid booking details");
+            return RedirectToAction(nameof(ManageHotel), new { id = model.HotelId });
         }
         var guest = _guestService.GetById(model.GuestId);
         var room = _roomService.GetById(model.RoomId);
@@ -180,9 +184,9 @@ public IActionResult AddRoom(RoomInputModel model)
                 Guest = guest,
                 Room = room
             };
-            if(!_bookingService.IsRoomAvailable(room.Id, booking.CheckOut, booking.CheckIn))
+            if (!_bookingService.IsRoomAvailable(room.Id, booking.CheckOut, booking.CheckIn))
             {
-                SetBookingModalTempData(model.GuestId,$"Room {room.Number} is already booked for the selected dates."); 
+                SetBookingModalTempData(model.GuestId, $"Room {room.Number} is already booked for the selected dates.");
                 return RedirectToAction(nameof(ManageHotel), new { id = model.HotelId });
             }
             _bookingService.Create(booking);

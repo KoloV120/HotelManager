@@ -3,6 +3,7 @@ using System;
 using HotelManager.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HotelManager.Data.Migrations
 {
     [DbContext(typeof(HMDbContext))]
-    partial class HMDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250506092045_AddRoomsPerFloorToHotel")]
+    partial class AddRoomsPerFloorToHotel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

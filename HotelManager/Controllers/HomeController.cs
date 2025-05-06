@@ -59,7 +59,8 @@ public class HomeController : Controller
                 Name = model.Name,
                 City = model.City,
                 Address = model.Address,
-                Email = model.Email
+                Email = model.Email,
+                RoomsPerFloor = model.RoomsPerFloor
             };
 
             bool success = _hotelService.Create(hotel);

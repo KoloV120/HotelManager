@@ -20,4 +20,6 @@ public class HotelInputModel
     [EmailAddress]
     [StringLength(100)]
     public string Email { get; set; } = string.Empty;
+
+    public int RoomsPerFloor { get; set; } = 0;
 }

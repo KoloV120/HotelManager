@@ -35,6 +35,7 @@ public class HotelService : BaseService<Hotel>, IHotelService
                 Address = a.Address,
                 City = a.City,
                 Email = a.Email,
+                RoomsPerFloor = a.RoomsPerFloor,
                 Rooms = a.Rooms
                     .Select(s => new RoomMinifiedInfoProjection
                     {
@@ -133,5 +134,23 @@ public class HotelService : BaseService<Hotel>, IHotelService
             MonthlyRevenue =  GetMonthlyRevenue(hotelId),
             RecentBookings =  GetRecentBookings(hotelId)
         };
+    }
+
+    public int GetRoomsPerFloor(Guid hotelId)
+    {
+        var hotel = GetById(hotelId);
+        if (hotel == null)
+            throw new InvalidOperationException($"Hotel with ID {hotelId} not found");
+
+        return hotel.RoomsPerFloor;
+    }
+
+    public IEnumerable<Room> GetAllRooms(Guid hotelId)
+    {
+        var hotel = GetById(hotelId);
+        if (hotel == null)
+            throw new InvalidOperationException($"Hotel with ID {hotelId} not found");
+
+        return hotel.Rooms;
     }
 }

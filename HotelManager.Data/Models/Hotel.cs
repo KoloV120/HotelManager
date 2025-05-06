@@ -13,4 +13,6 @@ public class Hotel : IIdentifiable
     // Navigation property
     public ICollection<Room> Rooms { get; set; } = new List<Room>();
 
+    public int RoomsPerFloor { get; set; }
+
 }
