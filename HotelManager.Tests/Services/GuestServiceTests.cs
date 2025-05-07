@@ -1,0 +1,164 @@
+using Xunit;
+using Moq;
+using FluentAssertions;
+using HotelManager.Core.Services;
+using HotelManager.Data.Models;
+using HotelManager.Data.Repositories;
+using HotelManager.Core.Projections.Guests;
+using HotelManager.Data.Sorting;
+using HotelManager.Core.Projections.Bookings;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+
+namespace HotelManager.Tests.Services
+{
+    public class GuestServiceTests
+    {
+        private readonly Mock<IRepository<Guest>> _guestRepositoryMock;
+        private readonly GuestService _sut;
+
+        public GuestServiceTests()
+        {
+            _guestRepositoryMock = new Mock<IRepository<Guest>>();
+            _sut = new GuestService(_guestRepositoryMock.Object);
+        }
+
+        [Fact]
+        public void Create_ValidGuest_ReturnsTrue()
+        {
+            // Arrange
+            var guest = new Guest
+            {
+                Id = Guid.NewGuid(),
+                Name = "John Doe",
+                Email = "john@example.com",
+                Phone = "1234567890"
+            };
+
+            _guestRepositoryMock.Setup(x => x.Create(guest));
+
+            // Act
+            var result = _sut.Create(guest);
+
+            // Assert
+            result.Should().BeTrue();
+            _guestRepositoryMock.Verify(x => x.Create(guest), Times.Once);
+        }
+
+        [Fact]
+        public void GetById_ExistingGuest_ReturnsGuest()
+        {
+            // Arrange
+            var guestId = Guid.NewGuid();
+            var guest = new Guest { Id = guestId, Name = "John Doe" };
+
+            _guestRepositoryMock.Setup(x => x.Get(It.IsAny<System.Linq.Expressions.Expression<Func<Guest, bool>>>()))
+                .Returns(guest);
+
+            // Act
+            var result = _sut.GetById(guestId);
+
+            // Assert
+            result.Should().NotBeNull();
+            result.Id.Should().Be(guestId);
+        }
+
+        [Fact]
+        public void GetAll_ReturnsAllGuests()
+        {
+            // Arrange
+            var guests = new List<GuestGeneralInfoProjection>
+            {
+                new GuestGeneralInfoProjection 
+                { 
+                    Id = Guid.NewGuid(), 
+                    Name = "John Doe",
+                    Email = "john@example.com",
+                    Phone = "1234567890",
+                    Bookings = new List<BookingMinifiedInfoProjection>()
+                },
+                new GuestGeneralInfoProjection 
+                { 
+                    Id = Guid.NewGuid(), 
+                    Name = "Jane Doe",
+                    Email = "jane@example.com",
+                    Phone = "0987654321",
+                    Bookings = new List<BookingMinifiedInfoProjection>()
+                }
+            };
+
+            _guestRepositoryMock
+                .Setup(x => x.GetMany(
+                    It.IsAny<Expression<Func<Guest, bool>>>(),
+                    It.IsAny<Expression<Func<Guest, GuestGeneralInfoProjection>>>(),
+                    It.IsAny<IEnumerable<IOrderClause<Guest>>>()))
+                .Returns(guests);
+
+            // Act
+            var result = _sut.GetAll();
+
+            // Assert
+            result.Should().NotBeEmpty();
+            result.Should().HaveCount(2);
+            result.Should().BeEquivalentTo(guests, options => options
+                .Including(x => x.Id)
+                .Including(x => x.Name)
+                .Including(x => x.Email)
+                .Including(x => x.Phone)
+                .Including(x => x.Bookings));
+        }
+
+        [Fact]
+        public void GetAllMinified_ShouldReturnMinifiedGuestInfo()
+        {
+            // Arrange
+            var guests = new List<Guest>
+            {
+                new Guest
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "John Doe",
+                    Email = "john@example.com",
+                    Phone = "1234567890"
+                }
+            };
+
+            _guestRepositoryMock
+                .Setup(x => x.GetMany(
+                    It.IsAny<Expression<Func<Guest, bool>>>(),
+                    It.IsAny<Expression<Func<Guest, GuestMinifiedInfoProjection>>>(),
+                    It.IsAny<IEnumerable<IOrderClause<Guest>>>()))
+                .Returns(guests.Select(g => new GuestMinifiedInfoProjection
+                {
+                    Id = g.Id,
+                    Name = g.Name
+                }));
+
+            // Act
+            var result = _sut.GetAllMinified();
+
+            // Assert
+            result.Should().NotBeEmpty();
+            var guest = result.First();
+            guest.Name.Should().Be("John Doe");
+        }
+
+        [Fact]
+        public void GetById_NonExistingGuest_ReturnsNull()
+        {
+            // Arrange
+            var guestId = Guid.NewGuid();
+            _guestRepositoryMock
+                .Setup(x => x.Get(It.IsAny<Expression<Func<Guest, bool>>>()))
+                .Returns((Guest)null);
+
+            // Act
+            var result = _sut.GetById(guestId);
+
+            // Assert
+            result.Should().BeNull();
+        }
+    }
+}
