@@ -13,6 +13,7 @@ public interface IHotelService : IService<Hotel>
    int GetCurrentGuestsCount(Guid hotelId);
     IEnumerable<RoomGeneralInfoProjection> GetAvailableRooms(Guid hotelId);
     IEnumerable<BookingGeneralInfoProjection> GetActiveBookings(Guid hotelId);
+    IEnumerable<BookingGeneralInfoProjection> GetAllBookings(Guid hotelId);
     decimal GetMonthlyRevenue(Guid hotelId);
     IEnumerable<RecentBookingProjection> GetRecentBookings(Guid hotelId, int count = 5);
     HotelDashboardData GetHotelInfo(Guid hotelId);

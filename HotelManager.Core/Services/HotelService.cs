@@ -151,4 +151,33 @@ public class HotelService : BaseService<Hotel>, IHotelService
         return rooms.Where(r => 
             r.HotelId == hotelId);
     }
+
+    public IEnumerable<BookingGeneralInfoProjection> GetAllBookings(Guid hotelId)
+    {
+         var bookings = _bookingService.GetAll();
+    return bookings
+        .Where(b => b.Room.HotelId == hotelId)
+        .OrderByDescending(b => b.CheckIn)
+        .Select(b => new BookingGeneralInfoProjection
+        {
+            Id = b.Id,
+                CheckIn = b.CheckIn,
+                CheckOut = b.CheckOut,
+                Status = b.Status,
+                Guest = new GuestMinifiedInfoProjection
+                {
+                    Id = b.Guest.Id,
+                    Name = b.Guest.Name
+                },
+                Room = new RoomMinifiedInfoProjection
+                {
+                    Id = b.Room.Id,
+                    Number = b.Room.Number,
+                    PricePerNight = b.Room.PricePerNight,
+                    HotelId = b.Room.HotelId,
+                    Status = b.Room.Status,
+                    Type = b.Room.Type
+                }
+        });
+    }
 }
