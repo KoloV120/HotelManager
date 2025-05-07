@@ -117,6 +117,7 @@ public class HotelManagementController : Controller
             
             _roomService.Create(room); // Assuming you have a service to handle room operations
             hotel.Rooms.Add(room);
+             TempData["Success"] = "Room added successfully!";
             return RedirectToAction("ManageHotel", new { id = model.HotelId });
         }
         catch (Exception ex)
@@ -186,7 +187,7 @@ public class HotelManagementController : Controller
                 Guest = guest,
                 Room = room
             };
-            if (!_bookingService.IsRoomAvailable(room.Id, booking.CheckOut, booking.CheckIn))
+            if (!_bookingService.IsRoomAvailable(room.Id, booking.CheckIn, booking.CheckOut))
             {
                 SetBookingModalTempData(model.GuestId, $"Room {room.Number} is already booked for the selected dates.");
                 return RedirectToAction(nameof(ManageHotel), new { id = model.HotelId });

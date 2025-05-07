@@ -62,10 +62,9 @@
 
     <!-- Navigation Buttons -->
     <div class="mb-5">
-        <a asp-controller="Guest" asp-action="Index" class="btn btn-primary me-2">Manage Guests</a>
-        <a asp-controller="Room" asp-action="Index" asp-route-id="@ViewContext.RouteData.Values["id"]"
-            class="btn btn-secondary me-2">Manage Rooms</a>
-        <a asp-controller="Booking" asp-action="Index" class="btn btn-success me-2">Manage Bookings</a>
+        <a asp-controller="Guest" asp-action="Index" asp-route-id="@ViewContext.RouteData.Values["id"]" class="btn btn-primary me-2">Manage Guests</a>
+        <a asp-controller="Room" asp-action="Index" asp-route-id="@ViewContext.RouteData.Values["id"]" class="btn btn-secondary me-2">Manage Rooms</a>
+        <a asp-controller="Booking" asp-action="Index" asp-route-id="@ViewContext.RouteData.Values["id"]" class="btn btn-success me-2">Manage Bookings</a>
     </div>
 
     <!-- Stats Overview -->
