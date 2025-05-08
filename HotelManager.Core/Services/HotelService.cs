@@ -90,9 +90,12 @@ public class HotelService : BaseService<Hotel>, IHotelService
 
     public IEnumerable<RoomGeneralInfoProjection> GetAvailableRooms(Guid hotelId)
     {
-        var rooms = _roomService.GetAll();
-        return rooms.Where(r => 
-            r.HotelId == hotelId);
+        var bookings = this.GetActiveBookings(hotelId);
+        List<Guid> bookedRoomIds = bookings.Select(b => b.Room.Id).ToList();
+        var allRooms = _roomService.GetAllByHotelId(hotelId);
+        return allRooms.Where(r => 
+            bookedRoomIds.Contains(r.Id) == false &&
+            r.Status == "Available");
     }
 
     public IEnumerable<BookingGeneralInfoProjection> GetActiveBookings(Guid hotelId)
