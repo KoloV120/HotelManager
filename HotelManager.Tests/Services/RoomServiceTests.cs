@@ -142,5 +142,53 @@ namespace HotelManager.Tests.Services
             room.Number.Should().Be(101);
             room.Type.Should().Be("Standard");
         }
+        [Fact]
+        public void GetAllMinified_ShouldReturnAllRoomsMinified()
+        {
+            // Arrange
+            var rooms = new List<Room>
+            {
+                new Room
+                {
+                    Id = Guid.NewGuid(),
+                    Number = 101,
+                    PricePerNight = 100,
+                    Status = "Available",
+                    HotelId = Guid.NewGuid(),
+                    Type = "Standard"
+                },
+                new Room
+                {
+                    Id = Guid.NewGuid(),
+                    Number = 102,
+                    PricePerNight = 120,
+                    Status = "Occupied",
+                    HotelId = Guid.NewGuid(),
+                    Type = "Suite"
+                }
+            };
+
+            _roomRepositoryMock
+                .Setup(r => r.GetMany(
+                    It.IsAny<Expression<Func<Room, bool>>>(),
+                    It.IsAny<Expression<Func<Room, RoomMinifiedInfoProjection>>>(),
+                    It.IsAny<IEnumerable<IOrderClause<Room>>>()))
+                .Returns((Expression<Func<Room, bool>> filterExpr,
+                          Expression<Func<Room, RoomMinifiedInfoProjection>> selectorExpr,
+                          IEnumerable<IOrderClause<Room>> order) =>
+                {
+                    var filter = filterExpr.Compile();
+                    var selector = selectorExpr.Compile();
+                    return rooms.Where(filter).Select(selector);
+                });
+
+            // Act
+            var result = _sut.GetAllMinified().ToList();
+
+            // Assert
+            result.Should().HaveCount(2);
+            result[0].Number.Should().Be(101);
+            result[1].Number.Should().Be(102);
+        }
     }
 }

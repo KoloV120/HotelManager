@@ -10,6 +10,7 @@ using HotelManager.Core.Interfaces;
 using HotelManager.Core.Projections.Bookings;
 using HotelManager.Core.Projections.Rooms;
 using HotelManager.Core.Projections.Guests;
+using HotelManager.Data.Sorting;
 
 namespace HotelManager.Tests.Services
 {
@@ -341,6 +342,38 @@ namespace HotelManager.Tests.Services
             // Assert
             result.Should().HaveCount(2);
             result.All(r => r.HotelId == hotelId).Should().BeTrue();
+        }
+        [Fact]
+        public void GetAllMinified_ShouldReturnAllHotelsMinified()
+        {
+            // Arrange
+            var hotels = new List<Hotel>
+            {
+                new Hotel { Id = Guid.NewGuid(), Name = "Hotel Alpha" },
+                new Hotel { Id = Guid.NewGuid(), Name = "Hotel Beta" }
+            };
+
+            _hotelRepositoryMock
+                .Setup(r => r.GetMany(
+                    It.IsAny<Expression<Func<Hotel, bool>>>(),
+                    It.IsAny<Expression<Func<Hotel, HotelMinifiedInfoProjection>>>(),
+                    It.IsAny<IEnumerable<IOrderClause<Hotel>>>()))
+                .Returns((Expression<Func<Hotel, bool>> filterExpr,
+                          Expression<Func<Hotel, HotelMinifiedInfoProjection>> selectorExpr,
+                          IEnumerable<IOrderClause<Hotel>> order) =>
+                {
+                    var filter = filterExpr.Compile();
+                    var selector = selectorExpr.Compile();
+                    return hotels.Where(filter).Select(selector);
+                });
+
+            // Act
+            var result = _sut.GetAllMinified().ToList();
+
+            // Assert
+            result.Should().HaveCount(2);
+            result[0].Name.Should().Be("Hotel Alpha");
+            result[1].Name.Should().Be("Hotel Beta");
         }
     }
 }
