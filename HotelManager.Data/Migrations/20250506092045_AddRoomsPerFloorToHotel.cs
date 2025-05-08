@@ -1,9 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
+using System.Diagnostics.CodeAnalysis;
 
 #nullable disable
 
 namespace HotelManager.Data.Migrations
 {
+
+    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
     /// <inheritdoc />
     public partial class AddRoomsPerFloorToHotel : Migration
     {
