@@ -9,11 +9,15 @@ public class RoomController : Controller
 {
     private readonly IRoomService _roomService;
     private readonly IHotelService _hotelService;
+    private readonly ILogger<RoomController> _logger;
 
-    public RoomController(IRoomService roomService, IHotelService hotelService)
+
+    public RoomController(IRoomService roomService, IHotelService hotelService,ILogger<RoomController> logger)
     {
         _roomService = roomService;
         _hotelService = hotelService;
+        _logger = logger;
+
     }
 
     public IActionResult Index(Guid id)

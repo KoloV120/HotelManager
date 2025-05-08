@@ -13,9 +13,9 @@ public class BookingController : Controller
     private readonly IRoomService _roomService;
     private readonly IGuestService _guestService;
     private readonly IHotelService _hotelService;
-   private readonly ILogger<BookingController> _logger;
+    private readonly ILogger<BookingController> _logger;
 
-    public BookingController(IBookingService bookingService, IRoomService roomService, IGuestService guestService, IHotelService hotelService,ILogger<BookingController> logger)
+    public BookingController(IBookingService bookingService, IRoomService roomService, IGuestService guestService, IHotelService hotelService, ILogger<BookingController> logger)
     {
         _bookingService = bookingService;
         _roomService = roomService;
@@ -25,9 +25,11 @@ public class BookingController : Controller
     }
 
     public IActionResult Index(Guid id)
-    {   try{
+    {
+        try
+        {
             ViewData["HotelId"] = id;
-           
+
             var bookings = _hotelService.GetAllBookings(id)
             .Select(b => new BookingViewModel
             {
@@ -39,21 +41,21 @@ public class BookingController : Controller
                 Status = b.Status
             }).ToList();
 
-            return View("Index",bookings);
+            return View("Index", bookings);
         }
         catch (InvalidOperationException ex)
-            {
+        {
             _logger.LogWarning(ex, "Booking not found");
             return NotFound();
-            }
+        }
         catch (Exception ex)
-            {
+        {
             _logger.LogError(ex, "Error managing bookings");
             return View("Error", new ErrorViewModel
             {
                 RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
             });
-            }
+        }
     }
 
     [HttpPost]
