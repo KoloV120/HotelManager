@@ -168,5 +168,47 @@ namespace HotelManager.Tests.Services
             // Assert
             result.Should().Be(expectedAvailability);
         }
+        [Fact]
+        public void GetAllMinified_ShouldReturnAllBookingsMinified()
+        {
+            // Arrange
+            var bookings = new List<Booking>
+            {
+                new Booking
+                {
+                    Id = Guid.NewGuid(),
+                    CheckIn = new DateTime(2024, 5, 10),
+                    CheckOut = new DateTime(2024, 5, 12)
+                },
+                new Booking
+                {
+                    Id = Guid.NewGuid(),
+                    CheckIn = new DateTime(2024, 5, 15),
+                    CheckOut = new DateTime(2024, 5, 18)
+                }
+            };
+
+            _bookingRepositoryMock
+                .Setup(r => r.GetMany(
+                    It.IsAny<Expression<Func<Booking, bool>>>(),
+                    It.IsAny<Expression<Func<Booking, BookingMinifiedInfoProjection>>>(),
+                    It.IsAny<IEnumerable<IOrderClause<Booking>>>()))
+                .Returns((Expression<Func<Booking, bool>> filterExpr,
+                          Expression<Func<Booking, BookingMinifiedInfoProjection>> selectorExpr,
+                          IEnumerable<IOrderClause<Booking>> order) =>
+                {
+                    var filter = filterExpr.Compile();
+                    var selector = selectorExpr.Compile();
+                    return bookings.Where(filter).Select(selector);
+                });
+
+            // Act
+            var result = _sut.GetAllMinified().ToList();
+
+            // Assert
+            result.Should().HaveCount(2);
+            result[0].CheckIn.Should().Be(new DateTime(2024, 5, 10));
+            result[1].CheckIn.Should().Be(new DateTime(2024, 5, 15));
+        }
     }
 }

@@ -160,5 +160,83 @@ namespace HotelManager.Tests.Services
             // Assert
             result.Should().BeNull();
         }
+        [Fact]
+        public void GetAllByHotelId_ShouldReturnGuestsWithBookingsForThatHotel()
+        {
+            // Arrange
+            var hotelId = Guid.NewGuid();
+            var guestId = Guid.NewGuid();
+            var bookingId = Guid.NewGuid();
+
+            var guests = new List<Guest>
+            {
+                new Guest
+                {
+                    Id = guestId,
+                    Name = "Alice",
+                    Email = "alice@example.com",
+                    Phone = "1234567890",
+                    Bookings = new List<Booking>
+                    {
+                        new Booking
+                        {
+                            Id = bookingId,
+                            CheckIn = DateTime.Today,
+                            CheckOut = DateTime.Today.AddDays(2),
+                            Room = new Room
+                            {
+                                Id = Guid.NewGuid(),
+                                HotelId = hotelId
+                            }
+                        }
+                    }
+                },
+                new Guest
+                {
+                    Id = Guid.NewGuid(),
+                    Name = "Bob",
+                    Email = "bob@example.com",
+                    Phone = "0987654321",
+                    Bookings = new List<Booking>
+                    {
+                        new Booking
+                        {
+                            Id = Guid.NewGuid(),
+                            CheckIn = DateTime.Today,
+                            CheckOut = DateTime.Today.AddDays(1),
+                            Room = new Room
+                            {
+                                Id = Guid.NewGuid(),
+                                HotelId = Guid.NewGuid() // Different hotel
+                            }
+                        }
+                    }
+                }
+            };
+
+            _guestRepositoryMock
+    .Setup(r => r.GetMany(
+        It.IsAny<Expression<Func<Guest, bool>>>(),
+        It.IsAny<Expression<Func<Guest, GuestGeneralInfoProjection>>>(),
+        It.IsAny<IEnumerable<IOrderClause<Guest>>>()))
+    .Returns((Expression<Func<Guest, bool>> filterExpr,
+              Expression<Func<Guest, GuestGeneralInfoProjection>> selectorExpr,
+              IEnumerable<IOrderClause<Guest>> order) =>
+    {
+        var filter = filterExpr.Compile();
+        var selector = selectorExpr.Compile();
+        return guests.Where(filter).Select(selector);
+    });
+
+            // Act
+            var result = _sut.GetAllByHotelId(hotelId).ToList();
+
+            // Assert
+            result.Should().HaveCount(1);
+            var guest = result.First();
+            guest.Name.Should().Be("Alice");
+            guest.Bookings.Should().HaveCount(1);
+            guest.Bookings.First().Id.Should().Be(bookingId);
+        }
     }
 }
