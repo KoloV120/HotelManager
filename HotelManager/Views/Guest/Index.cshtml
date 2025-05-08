@@ -1,0 +1,45 @@
+@model List<HotelManager.Models.GuestViewModel>
+
+<div class="container mt-4">
+    <h2>Guests</h2>
+
+    @if (TempData["Message"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["Message"]
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["Error"]
+        </div>
+    }
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var guest in Model)
+            {
+                <tr>
+                    <td>@guest.Name</td>
+                    <td>@guest.Email</td>
+                    <td>@guest.Phone</td>
+                    <td>
+                        <a asp-action="CallToReception" asp-route-guestId="@guest.Id" asp-route-id="@ViewData["HotelId"]" class="btn btn-primary btn-sm">
+                            Call to Reception
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

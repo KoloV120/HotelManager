@@ -52,4 +52,30 @@ public class GuestService : BaseService<Guest>, IGuestService
             },
             new[] { nameOrderClause });
     }
+
+    public IEnumerable<GuestGeneralInfoProjection> GetAllByHotelId(Guid hotelId)
+    {
+        var nameOrderClause = new OrderClause<Guest> { Expression = g => g.Name };
+
+        return this.Repository.GetMany(
+            g => g.Bookings.Any(b => b.Room.HotelId == hotelId),
+            g => new GuestGeneralInfoProjection
+            {
+                Id = g.Id,
+                Name = g.Name,
+                Email = g.Email,
+                Phone = g.Phone,
+                Bookings = g.Bookings
+                    .Where(b => b.Room.HotelId == hotelId)
+                    .Select(b => new BookingMinifiedInfoProjection
+                    {
+                        Id = b.Id,
+                        CheckIn = b.CheckIn,
+                        CheckOut = b.CheckOut,
+                    })
+                    .OrderByDescending(b => b.CheckIn)
+                    .ToList()
+            },
+            new[] { nameOrderClause });
+    }
 }

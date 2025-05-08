@@ -8,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Set the default culture to en-US
 var cultureInfo = new CultureInfo("en-US");
 CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
-CultureInfo.DefaultThreadCurrentUICulture = cultureInfo; 
+CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -47,10 +47,14 @@ app.MapControllerRoute(
     pattern: "HotelManagement/ManageHotel/{id}",
     defaults: new { controller = "HotelManagement", action = "ManageHotel" });
 
- app.MapControllerRoute(
-     name: "roomManagement",
-     pattern: "Room/Index/{id}",
-     defaults: new { controller = "Room", action = "Index" });
+app.MapControllerRoute(
+    name: "roomManagement",
+    pattern: "Room/Index/{id}",
+    defaults: new { controller = "Room", action = "Index" });
+app.MapControllerRoute(
+ name: "guestManagement",
+ pattern: "Guest/Index/{id}",
+ defaults: new { controller = "Guest", action = "Guest" });
 
 app.MapControllerRoute(
     name: "default",

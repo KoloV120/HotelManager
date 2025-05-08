@@ -8,4 +8,5 @@ public interface IGuestService : IService<Guest>
 {
     IEnumerable<GuestGeneralInfoProjection> GetAll();
     IEnumerable<GuestMinifiedInfoProjection> GetAllMinified();
+    IEnumerable<GuestGeneralInfoProjection> GetAllByHotelId(Guid hotelId);
 }
