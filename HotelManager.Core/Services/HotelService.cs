@@ -68,11 +68,24 @@ public class HotelService : BaseService<Hotel>, IHotelService
 
     public int GetCurrentGuestsCount(Guid hotelId)
     {
-        var bookings = _bookingService.GetAll();
-        return bookings.Count(b => 
-            b.Room.HotelId == hotelId && 
-            b.CheckIn <= DateTime.Now && 
-            b.CheckOut >= DateTime.Now);
+        var bookings = this.GetActiveBookings(hotelId);
+        int currentGuestsCount = 0;
+        foreach (var booking in bookings)
+        {
+           if(booking.Room.Type == "Single")
+           {
+               currentGuestsCount += 1;
+           }
+           else if(booking.Room.Type == "Double")
+           {
+               currentGuestsCount += 2;
+           }
+           else if(booking.Room.Type == "Suite")
+           {
+               currentGuestsCount += 4;
+           }
+        }
+        return currentGuestsCount;
     }
 
     public IEnumerable<RoomGeneralInfoProjection> GetAvailableRooms(Guid hotelId)
