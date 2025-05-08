@@ -375,5 +375,73 @@ namespace HotelManager.Tests.Services
             result[0].Name.Should().Be("Hotel Alpha");
             result[1].Name.Should().Be("Hotel Beta");
         }
+        [Fact]
+        public void GetAll_ShouldReturnAllHotelsWithRooms()
+        {
+            // Arrange
+            var hotelId = Guid.NewGuid();
+            var hotels = new List<Hotel>
+            {
+                new Hotel
+                {
+                    Id = hotelId,
+                    Name = "Hotel Alpha",
+                    Address = "123 Main St",
+                    City = "Metropolis",
+                    Email = "alpha@hotel.com",
+                    RoomsPerFloor = 10,
+                    Rooms = new List<Room>
+                    {
+                        new Room
+                        {
+                            Id = Guid.NewGuid(),
+                            Number = 101,
+                            PricePerNight = 100,
+                            HotelId = hotelId,
+                            Status = "Available",
+                            Type = "Standard"
+                        },
+                        new Room
+                        {
+                            Id = Guid.NewGuid(),
+                            Number = 102,
+                            PricePerNight = 120,
+                            HotelId = hotelId,
+                            Status = "Occupied",
+                            Type = "Suite"
+                        }
+                    }
+                }
+            };
+
+            _hotelRepositoryMock
+                .Setup(r => r.GetMany(
+                    It.IsAny<Expression<Func<Hotel, bool>>>(),
+                    It.IsAny<Expression<Func<Hotel, HotelGeneralInfoProjection>>>(),
+                    It.IsAny<IEnumerable<IOrderClause<Hotel>>>()))
+                .Returns((Expression<Func<Hotel, bool>> filterExpr,
+                          Expression<Func<Hotel, HotelGeneralInfoProjection>> selectorExpr,
+                          IEnumerable<IOrderClause<Hotel>> order) =>
+                {
+                    var filter = filterExpr.Compile();
+                    var selector = selectorExpr.Compile();
+                    return hotels.Where(filter).Select(selector);
+                });
+
+            // Act
+            var result = _sut.GetAll().ToList();
+
+            // Assert
+            result.Should().HaveCount(1);
+            var hotel = result.First();
+            hotel.Name.Should().Be("Hotel Alpha");
+            hotel.Address.Should().Be("123 Main St");
+            hotel.City.Should().Be("Metropolis");
+            hotel.Email.Should().Be("alpha@hotel.com");
+            hotel.RoomsPerFloor.Should().Be(10);
+            hotel.Rooms.Should().HaveCount(2);
+            hotel.Rooms.ElementAt(0).Number.Should().Be(101);
+            hotel.Rooms.ElementAt(1).Number.Should().Be(102);
+        }
     }
 }

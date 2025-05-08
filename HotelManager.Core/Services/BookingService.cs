@@ -46,9 +46,19 @@ public class BookingService : BaseService<Booking>, IBookingService
     }
 
     public IEnumerable<BookingMinifiedInfoProjection> GetAllMinified()
-    {
-        throw new NotImplementedException();
-    }
+{
+    var checkInOrderClause = new OrderClause<Booking> { Expression = b => b.CheckIn };
+
+    return this.Repository.GetMany(
+        _ => true,
+        b => new BookingMinifiedInfoProjection
+        {
+            Id = b.Id,
+            CheckIn = b.CheckIn,
+            CheckOut = b.CheckOut,
+        },
+        new[] { checkInOrderClause });
+}
 
     public bool IsRoomAvailable(Guid roomId, DateTime checkIn, DateTime checkOut)
     {
