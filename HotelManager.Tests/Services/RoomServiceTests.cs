@@ -25,7 +25,6 @@ namespace HotelManager.Tests.Services
         [Fact]
         public void Create_ValidRoom_ReturnsTrue()
         {
-            // Arrange
             var room = new Room
             {
                 Id = Guid.NewGuid(),
@@ -37,10 +36,8 @@ namespace HotelManager.Tests.Services
 
             _roomRepositoryMock.Setup(x => x.Create(It.IsAny<Room>()));
 
-            // Act
             var result = _sut.Create(room);
 
-            // Assert
             result.Should().BeTrue();
             _roomRepositoryMock.Verify(x => x.Create(room), Times.Once);
         }
@@ -48,7 +45,6 @@ namespace HotelManager.Tests.Services
         [Fact]
         public void GetAllByHotelId_ReturnsCorrectRooms()
         {
-            // Arrange
             var hotelId = Guid.NewGuid();
             var rooms = new List<Room>
             {
@@ -90,10 +86,8 @@ namespace HotelManager.Tests.Services
                     Bookings = new List<BookingMinifiedInfoProjection>()
                 }));
 
-            // Act
             var result = _sut.GetAllByHotelId(hotelId);
 
-            // Assert
             result.Should().NotBeEmpty();
             result.Should().HaveCount(2);
             result.All(r => r.HotelId == hotelId).Should().BeTrue();
@@ -102,7 +96,6 @@ namespace HotelManager.Tests.Services
         [Fact]
         public void GetAll_ShouldReturnAllRooms()
         {
-            // Arrange
             var rooms = new List<Room>
             {
                 new Room
@@ -133,10 +126,8 @@ namespace HotelManager.Tests.Services
                     Bookings = new List<BookingMinifiedInfoProjection>()
                 }));
 
-            // Act
             var result = _sut.GetAll();
 
-            // Assert
             result.Should().NotBeEmpty();
             var room = result.First();
             room.Number.Should().Be(101);
@@ -145,7 +136,6 @@ namespace HotelManager.Tests.Services
         [Fact]
         public void GetAllMinified_ShouldReturnAllRoomsMinified()
         {
-            // Arrange
             var rooms = new List<Room>
             {
                 new Room
@@ -182,10 +172,8 @@ namespace HotelManager.Tests.Services
                     return rooms.Where(filter).Select(selector);
                 });
 
-            // Act
             var result = _sut.GetAllMinified().ToList();
 
-            // Assert
             result.Should().HaveCount(2);
             result[0].Number.Should().Be(101);
             result[1].Number.Should().Be(102);
