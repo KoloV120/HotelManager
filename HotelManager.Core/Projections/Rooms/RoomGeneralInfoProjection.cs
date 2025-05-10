@@ -1,6 +1,4 @@
-using System;
 using HotelManager.Core.Projections.Bookings;
-using HotelManager.Core.Projections.Hotels;
 
 namespace HotelManager.Core.Projections.Rooms;
 
@@ -12,5 +10,5 @@ public record RoomGeneralInfoProjection
     public required decimal PricePerNight { get; set; }
     public required string Status { get; set; }
     public required Guid HotelId { get; set; }
-    public required  ICollection<BookingMinifiedInfoProjection> Bookings { get; set; }
+    public required ICollection<BookingMinifiedInfoProjection> Bookings { get; set; }
 }

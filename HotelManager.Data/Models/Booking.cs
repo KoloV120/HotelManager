@@ -1,5 +1,3 @@
-using System;
-
 namespace HotelManager.Data.Models;
 
 public class Booking : IIdentifiable
@@ -10,10 +8,8 @@ public class Booking : IIdentifiable
 
     public DateTime CheckOut { get; set; }
 
-    public string Status { get; set; } = string.Empty; // "confirmed", "checked-in", "completed", "cancelled"
+    public string Status { get; set; } = string.Empty;
 
-
-    // Navigation properties
     public Guest Guest { get; set; } = new Guest();
 
     public Room Room { get; set; } = new Room();
