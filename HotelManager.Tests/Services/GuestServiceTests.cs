@@ -28,7 +28,6 @@ namespace HotelManager.Tests.Services
         [Fact]
         public void Create_ValidGuest_ReturnsTrue()
         {
-            // Arrange
             var guest = new Guest
             {
                 Id = Guid.NewGuid(),
@@ -39,10 +38,8 @@ namespace HotelManager.Tests.Services
 
             _guestRepositoryMock.Setup(x => x.Create(guest));
 
-            // Act
             var result = _sut.Create(guest);
 
-            // Assert
             result.Should().BeTrue();
             _guestRepositoryMock.Verify(x => x.Create(guest), Times.Once);
         }
@@ -50,17 +47,14 @@ namespace HotelManager.Tests.Services
         [Fact]
         public void GetById_ExistingGuest_ReturnsGuest()
         {
-            // Arrange
             var guestId = Guid.NewGuid();
             var guest = new Guest { Id = guestId, Name = "John Doe" };
 
             _guestRepositoryMock.Setup(x => x.Get(It.IsAny<System.Linq.Expressions.Expression<Func<Guest, bool>>>()))
                 .Returns(guest);
 
-            // Act
             var result = _sut.GetById(guestId);
 
-            // Assert
             result.Should().NotBeNull();
             result.Id.Should().Be(guestId);
         }
@@ -68,7 +62,6 @@ namespace HotelManager.Tests.Services
         [Fact]
         public void GetAll_ReturnsAllGuests()
         {
-            // Arrange
             var guests = new List<GuestGeneralInfoProjection>
             {
                 new GuestGeneralInfoProjection 
@@ -96,10 +89,8 @@ namespace HotelManager.Tests.Services
                     It.IsAny<IEnumerable<IOrderClause<Guest>>>()))
                 .Returns(guests);
 
-            // Act
             var result = _sut.GetAll();
 
-            // Assert
             result.Should().NotBeEmpty();
             result.Should().HaveCount(2);
             result.Should().BeEquivalentTo(guests, options => options
@@ -113,7 +104,6 @@ namespace HotelManager.Tests.Services
         [Fact]
         public void GetAllMinified_ShouldReturnMinifiedGuestInfo()
         {
-            // Arrange
             var guests = new List<Guest>
             {
                 new Guest
@@ -136,10 +126,8 @@ namespace HotelManager.Tests.Services
                     Name = g.Name
                 }));
 
-            // Act
             var result = _sut.GetAllMinified();
 
-            // Assert
             result.Should().NotBeEmpty();
             var guest = result.First();
             guest.Name.Should().Be("John Doe");
@@ -148,22 +136,18 @@ namespace HotelManager.Tests.Services
         [Fact]
         public void GetById_NonExistingGuest_ReturnsNull()
         {
-            // Arrange
             var guestId = Guid.NewGuid();
             _guestRepositoryMock
                 .Setup(x => x.Get(It.IsAny<Expression<Func<Guest, bool>>>()))
                 .Returns((Guest)null);
 
-            // Act
             var result = _sut.GetById(guestId);
 
-            // Assert
             result.Should().BeNull();
         }
         [Fact]
         public void GetAllByHotelId_ShouldReturnGuestsWithBookingsForThatHotel()
         {
-            // Arrange
             var hotelId = Guid.NewGuid();
             var guestId = Guid.NewGuid();
             var bookingId = Guid.NewGuid();
@@ -207,7 +191,7 @@ namespace HotelManager.Tests.Services
                             Room = new Room
                             {
                                 Id = Guid.NewGuid(),
-                                HotelId = Guid.NewGuid() // Different hotel
+                                HotelId = Guid.NewGuid() 
                             }
                         }
                     }
@@ -227,11 +211,8 @@ namespace HotelManager.Tests.Services
         var selector = selectorExpr.Compile();
         return guests.Where(filter).Select(selector);
     });
-
-            // Act
             var result = _sut.GetAllByHotelId(hotelId).ToList();
 
-            // Assert
             result.Should().HaveCount(1);
             var guest = result.First();
             guest.Name.Should().Be("Alice");
