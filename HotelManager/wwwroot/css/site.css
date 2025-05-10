@@ -65,6 +65,11 @@ footer {
   text-align: center;
 }
 
+.btn:active {
+        background-color: var(--active-bg-color) !important;
+        border-color: var(--active-border-color) !important;
+        color: var(--active-color) !important;
+    }
 /* Transparent Card Background */
 .card {
     background-color: rgba(255, 255, 255, 0.4); /* White with 80% opacity */

@@ -23,7 +23,9 @@
     }
 
     <!-- Add Room Button -->
-    <button type="button" class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#addRoomModal">
+    <button type="button" class="btn mb-4"
+        style="background-color: #e75480; border: #b83761;color: white; --active-bg-color: #c03d66; --active-border-color: #993452;--active-color:#f0f0f0;" data-bs-toggle="modal"
+        data-bs-target="#addRoomModal">
         <i class="bi bi-plus-circle"></i> Add Room
     </button>
 
@@ -48,7 +50,8 @@
                     <td>@room.Status</td>
                     <td>
                         <!-- Edit Room Button -->
-                        <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editRoomModal-@room.Id">
+                        <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"
+                            data-bs-target="#editRoomModal-@room.Id">
                             Edit
                         </button>
 
@@ -73,20 +76,23 @@
                                     <input type="hidden" name="Id" value="@room.Id" />
                                     <div class="mb-3">
                                         <label class="form-label">Room Number</label>
-                                        <input type="number" class="form-control" name="Number" value="@room.Number" required />
+                                        <input type="number" class="form-control" name="Number" value="@room.Number"
+                                            required />
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label">Type</label>
                                         <select name="Type" class="form-select" required>
                                             @foreach (var type in roomTypes)
                                             {
-                                                <option value="@type" selected="@(room.Type == type ? "selected" : null)">@type</option>
+                                                <option value="@type" selected="@(room.Type == type ? "selected" : null)">@type
+                                                </option>
                                             }
                                         </select>
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label">Price Per Night</label>
-                                        <input type="number" class="form-control" name="PricePerNight" step="0.01" value="@room.PricePerNight" required />
+                                        <input type="number" class="form-control" name="PricePerNight" step="0.01"
+                                            value="@room.PricePerNight" required />
                                     </div>
                                 </div>
                                 <div class="modal-footer">
