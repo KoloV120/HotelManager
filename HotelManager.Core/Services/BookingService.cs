@@ -1,4 +1,3 @@
-using System;
 using HotelManager.Core.Interfaces;
 using HotelManager.Core.Projections.Bookings;
 using HotelManager.Core.Projections.Guests;

@@ -1,4 +1,3 @@
-using System;
 using HotelManager.Core.Interfaces;
 using HotelManager.Core.Projections.Bookings;
 using HotelManager.Core.Projections.Guests;
@@ -107,18 +106,18 @@ public class HotelService : BaseService<Hotel>, IHotelService
         int currentGuestsCount = 0;
         foreach (var booking in bookings)
         {
-           if(booking.Room.Type == "Single")
-           {
-               currentGuestsCount += 1;
-           }
-           else if(booking.Room.Type == "Double")
-           {
-               currentGuestsCount += 2;
-           }
-           else if(booking.Room.Type == "Suite")
-           {
-               currentGuestsCount += 4;
-           }
+            if (booking.Room.Type == "Single")
+            {
+                currentGuestsCount += 1;
+            }
+            else if (booking.Room.Type == "Double")
+            {
+                currentGuestsCount += 2;
+            }
+            else if (booking.Room.Type == "Suite")
+            {
+                currentGuestsCount += 4;
+            }
         }
         return currentGuestsCount;
     }
@@ -133,7 +132,7 @@ public class HotelService : BaseService<Hotel>, IHotelService
         var bookings = this.GetActiveBookings(hotelId);
         List<Guid> bookedRoomIds = bookings.Select(b => b.Room.Id).ToList();
         var allRooms = _roomService.GetAllByHotelId(hotelId);
-        return allRooms.Where(r => 
+        return allRooms.Where(r =>
             bookedRoomIds.Contains(r.Id) == false &&
             r.Status == "Available");
     }
@@ -146,9 +145,9 @@ public class HotelService : BaseService<Hotel>, IHotelService
     public IEnumerable<BookingGeneralInfoProjection> GetActiveBookings(Guid hotelId)
     {
         var bookings = _bookingService.GetAll();
-        return bookings.Where(b => 
-            b.Room.HotelId == hotelId && 
-            b.CheckIn <= DateTime.Now && 
+        return bookings.Where(b =>
+            b.Room.HotelId == hotelId &&
+            b.CheckIn <= DateTime.Now &&
             b.CheckOut >= DateTime.Now);
     }
 
@@ -161,8 +160,8 @@ public class HotelService : BaseService<Hotel>, IHotelService
     {
         var bookings = _bookingService.GetAll();
         return bookings
-            .Where(b => 
-                b.Room.HotelId == hotelId && 
+            .Where(b =>
+                b.Room.HotelId == hotelId &&
                 b.CheckIn.Month == DateTime.Now.Month)
             .Sum(b => b.Room.PricePerNight * (b.CheckOut - b.CheckIn).Days);
     }
@@ -197,18 +196,18 @@ public class HotelService : BaseService<Hotel>, IHotelService
     /// <returns>A <see cref="HotelDashboardData"/> object with hotel statistics.</returns>
     public HotelDashboardData GetHotelInfo(Guid hotelId)
     {
-        var hotel =  GetById(hotelId);
+        var hotel = GetById(hotelId);
         if (hotel == null)
             throw new InvalidOperationException($"Hotel with ID {hotelId} not found");
 
         return new HotelDashboardData
         {
             HotelName = hotel.Name,
-            TotalGuests =  GetCurrentGuestsCount(hotelId),
-            AvailableRooms =  GetAvailableRooms(hotelId),
-            ActiveBookings =  GetActiveBookings(hotelId),
-            MonthlyRevenue =  GetMonthlyRevenue(hotelId),
-            RecentBookings =  GetRecentBookings(hotelId)
+            TotalGuests = GetCurrentGuestsCount(hotelId),
+            AvailableRooms = GetAvailableRooms(hotelId),
+            ActiveBookings = GetActiveBookings(hotelId),
+            MonthlyRevenue = GetMonthlyRevenue(hotelId),
+            RecentBookings = GetRecentBookings(hotelId)
         };
     }
 
@@ -231,10 +230,10 @@ public class HotelService : BaseService<Hotel>, IHotelService
     /// </summary>
     /// <param name="hotelId">The hotel ID.</param>
     /// <returns>A collection of <see cref="RoomGeneralInfoProjection"/>.</returns>
-    public IEnumerable<RoomGeneralInfoProjection> GetAllRooms(Guid hotelId) 
+    public IEnumerable<RoomGeneralInfoProjection> GetAllRooms(Guid hotelId)
     {
         var rooms = _roomService.GetAll();
-        return rooms.Where(r => 
+        return rooms.Where(r =>
             r.HotelId == hotelId);
     }
 
@@ -243,7 +242,7 @@ public class HotelService : BaseService<Hotel>, IHotelService
     /// </summary>
     /// <param name="hotelId">The hotel ID.</param>
     /// <returns>A collection of <see cref="BookingGeneralInfoProjection"/>.</returns>
-    public IEnumerable<BookingGeneralInfoProjection> GetAllBookings(Guid hotelId) 
+    public IEnumerable<BookingGeneralInfoProjection> GetAllBookings(Guid hotelId)
     {
         var bookings = _bookingService.GetAll();
         return bookings

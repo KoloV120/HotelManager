@@ -1,4 +1,3 @@
-using System;
 using HotelManager.Core.Interfaces;
 using HotelManager.Core.Projections.Bookings;
 using HotelManager.Core.Projections.Guests;
@@ -73,7 +72,7 @@ public class GuestService : BaseService<Guest>, IGuestService
     /// </summary>
     /// <param name="hotelId">The hotel ID.</param>
     /// <returns>A collection of <see cref="GuestGeneralInfoProjection"/>.</returns>
-    public IEnumerable<GuestGeneralInfoProjection> GetAllByHotelId(Guid hotelId) 
+    public IEnumerable<GuestGeneralInfoProjection> GetAllByHotelId(Guid hotelId)
     {
         var nameOrderClause = new OrderClause<Guest> { Expression = g => g.Name };
 
