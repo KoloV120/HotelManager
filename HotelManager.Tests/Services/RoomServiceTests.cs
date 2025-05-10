@@ -22,7 +22,7 @@ namespace HotelManager.Tests.Services
             _sut = new RoomService(_roomRepositoryMock.Object);
         }
 
-        
+
         /// <summary>
         /// Tests the <see cref="RoomService.Create"/> method to ensure it successfully creates a valid room.
         /// </summary>
@@ -69,7 +69,7 @@ namespace HotelManager.Tests.Services
                     Id = Guid.NewGuid(),
                     HotelId = hotelId,
                     Number = 101,
-                    Type = "Standard",
+                    Type = "Single",
                     PricePerNight = 100,
                     Status = "Available",
                     Bookings = new List<Booking>()
@@ -79,7 +79,7 @@ namespace HotelManager.Tests.Services
                     Id = Guid.NewGuid(),
                     HotelId = hotelId,
                     Number = 102,
-                    Type = "Deluxe",
+                    Type = "Double",
                     PricePerNight = 150,
                     Status = "Available",
                     Bookings = new List<Booking>()
@@ -126,7 +126,7 @@ namespace HotelManager.Tests.Services
                 {
                     Id = Guid.NewGuid(),
                     Number = 101,
-                    Type = "Standard",
+                    Type = "Single",
                     PricePerNight = 100,
                     Status = "Available",
                     HotelId = Guid.NewGuid(),
@@ -155,7 +155,7 @@ namespace HotelManager.Tests.Services
             result.Should().NotBeEmpty();
             var room = result.First();
             room.Number.Should().Be(101);
-            room.Type.Should().Be("Standard");
+            room.Type.Should().Be("Single");
         }
 
         /// <summary>
@@ -177,7 +177,7 @@ namespace HotelManager.Tests.Services
                     PricePerNight = 100,
                     Status = "Available",
                     HotelId = Guid.NewGuid(),
-                    Type = "Standard"
+                    Type = "Single"
                 },
                 new Room
                 {
