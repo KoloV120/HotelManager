@@ -26,7 +26,6 @@ namespace HotelManager.Tests.Services
         [Fact]
         public void IsRoomAvailable_NoConflictingBookings_ReturnsTrue()
         {
-            // Arrange
             var roomId = Guid.NewGuid();
             var checkIn = DateTime.Today.AddDays(1);
             var checkOut = DateTime.Today.AddDays(3);
@@ -35,17 +34,14 @@ namespace HotelManager.Tests.Services
                 It.IsAny<System.Linq.Expressions.Expression<Func<Booking, bool>>>()))
                 .Returns(new List<Booking>());
 
-            // Act
             var result = _sut.IsRoomAvailable(roomId, checkIn, checkOut);
 
-            // Assert
             result.Should().BeTrue();
         }
 
         [Fact]
         public void Create_ValidBooking_ReturnsTrue()
         {
-            // Arrange
             var booking = new Booking
             {
                 Id = Guid.NewGuid(),
@@ -56,10 +52,8 @@ namespace HotelManager.Tests.Services
 
             _bookingRepositoryMock.Setup(x => x.Create(It.IsAny<Booking>()));
 
-            // Act
             var result = _sut.Create(booking);
 
-            // Assert
             result.Should().BeTrue();
             _bookingRepositoryMock.Verify(x => x.Create(booking), Times.Once);
         }
@@ -67,7 +61,7 @@ namespace HotelManager.Tests.Services
         [Fact]
         public void GetAll_ShouldReturnAllBookings()
         {
-            // Arrange
+
             var bookings = new List<Booking>
             {
                 new Booking 
@@ -108,21 +102,18 @@ namespace HotelManager.Tests.Services
                     }
                 }));
 
-            // Act
             var result = _sut.GetAll();
 
-            // Assert
             result.Should().NotBeEmpty();
             result.First().Guest.Should().NotBeNull();
             result.First().Room.Should().NotBeNull();
         }
 
         [Theory]
-        [InlineData(true)]  // No conflicting bookings
-        [InlineData(false)] // Has conflicting bookings
+        [InlineData(true)]  
+        [InlineData(false)] 
         public void IsRoomAvailable_ShouldReturnCorrectAvailability(bool expectedAvailability)
         {
-            // Arrange
             var roomId = Guid.NewGuid();
             var checkIn = DateTime.Today.AddDays(1);
             var checkOut = DateTime.Today.AddDays(3);
@@ -162,16 +153,13 @@ namespace HotelManager.Tests.Services
                     It.IsAny<IEnumerable<IOrderClause<Booking>>>()))
                 .Returns(bookings);
 
-            // Act
             var result = _sut.IsRoomAvailable(roomId, checkIn, checkOut);
 
-            // Assert
             result.Should().Be(expectedAvailability);
         }
         [Fact]
         public void GetAllMinified_ShouldReturnAllBookingsMinified()
         {
-            // Arrange
             var bookings = new List<Booking>
             {
                 new Booking
@@ -202,10 +190,8 @@ namespace HotelManager.Tests.Services
                     return bookings.Where(filter).Select(selector);
                 });
 
-            // Act
             var result = _sut.GetAllMinified().ToList();
 
-            // Assert
             result.Should().HaveCount(2);
             result[0].CheckIn.Should().Be(new DateTime(2024, 5, 10));
             result[1].CheckIn.Should().Be(new DateTime(2024, 5, 15));
