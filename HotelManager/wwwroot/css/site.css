@@ -35,21 +35,21 @@ body {
 
 /* Navigation Bar */
 nav {
-  background-color: #ffffff; /* White background */
-  border-right: 1px solid #dee2e6; /* Light border */
-  height: 100vh; /* Full height of the viewport */
+    background-color: #FFE6EC; /* Set the navigation bar color to #d39ca2 */
+    border-right: 1px solid #c28b91; /* Optional: Slightly darker border for contrast */
+    height: 100vh; /* Ensure the navigation bar spans the full height of the viewport */
 }
 
 nav .nav-link {
-  color: #212529; /* Dark text */
-  font-size: 1.1rem;
-  padding: 10px 15px;
-  border-radius: 5px;
+    color: #ffffff; /* White text for better contrast */
+    font-size: 1.1rem;
+    padding: 10px 15px;
+    border-radius: 5px;
 }
 
 nav .nav-link:hover {
-  background-color: #f8f9fa; /* Light hover effect */
-  color: #007bff; /* Blue text on hover */
+    background-color: #c28b91; /* Slightly darker pink on hover */
+    color: #ffffff; /* Keep text white on hover */
 }
 
 /* Main Content */
