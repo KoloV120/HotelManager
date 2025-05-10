@@ -37,7 +37,7 @@ body {
 nav {
   background-color: #ffffff; /* White background */
   border-right: 1px solid #dee2e6; /* Light border */
-  min-height: 100vh; /* Ensure it spans the full height of the viewport */
+  height: 100vh; /* Full height of the viewport */
 }
 
 nav .nav-link {
@@ -50,6 +50,11 @@ nav .nav-link {
 nav .nav-link:hover {
   background-color: #f8f9fa; /* Light hover effect */
   color: #007bff; /* Blue text on hover */
+}
+
+/* Main Content */
+main {
+  margin-left: 250px; /* Prevent overlap with the fixed navigation bar */
 }
 
 /* Footer */
