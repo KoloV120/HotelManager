@@ -23,7 +23,7 @@
                 <th>Name</th>
                 <th>Email</th>
                 <th>Phone</th>
-                <th>Actions</th>
+                <th>Call to reception</th>
             </tr>
         </thead>
         <tbody>
@@ -33,9 +33,9 @@
                     <td>@guest.Name</td>
                     <td>@guest.Email</td>
                     <td>@guest.Phone</td>
-                    <td>
-                        <a asp-action="CallToReception" asp-route-guestId="@guest.Id" asp-route-id="@ViewData["HotelId"]" class="btn btn-primary btn-sm">
-                            Call to Reception
+                    <td class="text-center align-middle">
+                        <a asp-action="CallToReception" asp-route-guestId="@guest.Id" asp-route-id="@ViewData["HotelId"]" class="btn btn-dark btn-sm">
+                            <i class="bi bi-telephone"></i>
                         </a>
                     </td>
                 </tr>

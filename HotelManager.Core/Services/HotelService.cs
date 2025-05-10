@@ -161,14 +161,14 @@ public class HotelService : BaseService<Hotel>, IHotelService
         return hotel.RoomsPerFloor;
     }
 
-    public IEnumerable<RoomGeneralInfoProjection> GetAllRooms(Guid hotelId) //done
+    public IEnumerable<RoomGeneralInfoProjection> GetAllRooms(Guid hotelId) 
     {
         var rooms = _roomService.GetAll();
         return rooms.Where(r => 
             r.HotelId == hotelId);
     }
 
-    public IEnumerable<BookingGeneralInfoProjection> GetAllBookings(Guid hotelId) //done
+    public IEnumerable<BookingGeneralInfoProjection> GetAllBookings(Guid hotelId) 
     {
          var bookings = _bookingService.GetAll();
     return bookings

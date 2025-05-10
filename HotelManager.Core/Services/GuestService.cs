@@ -53,7 +53,7 @@ public class GuestService : BaseService<Guest>, IGuestService
             new[] { nameOrderClause });
     }
 
-    public IEnumerable<GuestGeneralInfoProjection> GetAllByHotelId(Guid hotelId)
+    public IEnumerable<GuestGeneralInfoProjection> GetAllByHotelId(Guid hotelId) 
     {
         var nameOrderClause = new OrderClause<Guest> { Expression = g => g.Name };
 

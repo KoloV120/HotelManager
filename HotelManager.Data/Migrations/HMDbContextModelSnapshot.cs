@@ -4,11 +4,13 @@ using HotelManager.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using System.Diagnostics.CodeAnalysis;
 
 #nullable disable
 
 namespace HotelManager.Data.Migrations
 {
+    [ExcludeFromCodeCoverage]
     [DbContext(typeof(HMDbContext))]
     partial class HMDbContextModelSnapshot : ModelSnapshot
     {

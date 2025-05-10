@@ -1,10 +1,12 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using System.Diagnostics.CodeAnalysis;
 
 #nullable disable
 
 namespace HotelManager.Data.Migrations
 {
+    
     /// <inheritdoc />
     public partial class InitialCreate : Migration
     {
