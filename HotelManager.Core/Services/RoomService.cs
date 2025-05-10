@@ -61,7 +61,7 @@ public class RoomService : BaseService<Room>, IRoomService
         var numberOrderClause = new OrderClause<Room> { Expression = r => r.Number };
 
         return this.Repository.GetMany(
-            r => r.HotelId == id, // Filter by HotelId
+            r => r.HotelId == id,
             r => new RoomGeneralInfoProjection
             {
                 Id = r.Id,
@@ -80,7 +80,7 @@ public class RoomService : BaseService<Room>, IRoomService
                     .OrderBy(b => b.CheckIn)
                     .ToList()
             },
-            new[] { numberOrderClause } // Order by room number
+            new[] { numberOrderClause }
         );
     }
 
