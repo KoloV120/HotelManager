@@ -8,12 +8,23 @@ using HotelManager.Data.Sorting;
 
 namespace HotelManager.Core.Services;
 
+/// <summary>
+/// Provides services for managing rooms.
+/// </summary>
 public class RoomService : BaseService<Room>, IRoomService
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RoomService"/> class.
+    /// </summary>
+    /// <param name="repository">The repository for room entities.</param>
     public RoomService(IRepository<Room> repository) : base(repository)
     {
     }
 
+    /// <summary>
+    /// Gets all rooms with general information.
+    /// </summary>
+    /// <returns>A collection of <see cref="RoomGeneralInfoProjection"/>.</returns>
     public IEnumerable<RoomGeneralInfoProjection> GetAll()
     {
         var numberOrderClause = new OrderClause<Room> { Expression = r => r.Number };
@@ -41,34 +52,43 @@ public class RoomService : BaseService<Room>, IRoomService
             new[] { numberOrderClause });
     }
 
+    /// <summary>
+    /// Gets all rooms for a specific hotel by hotel ID.
+    /// </summary>
+    /// <param name="id">The hotel ID.</param>
+    /// <returns>A collection of <see cref="RoomGeneralInfoProjection"/>.</returns>
     public IEnumerable<RoomGeneralInfoProjection> GetAllByHotelId(Guid id)
     {
         var numberOrderClause = new OrderClause<Room> { Expression = r => r.Number };
 
-    return this.Repository.GetMany(
-        r => r.HotelId == id, // Filter by HotelId
-        r => new RoomGeneralInfoProjection
-        {
-            Id = r.Id,
-            Number = r.Number,
-            Type = r.Type,
-            PricePerNight = r.PricePerNight,
-            Status = r.Status,
-            HotelId = r.HotelId,
-            Bookings = r.Bookings
-                .Select(b => new BookingMinifiedInfoProjection
-                {
-                    Id = b.Id,
-                    CheckIn = b.CheckIn,
-                    CheckOut = b.CheckOut,
-                })
-                .OrderBy(b => b.CheckIn)
-                .ToList()
-        },
-        new[] { numberOrderClause } // Order by room number
-    );
+        return this.Repository.GetMany(
+            r => r.HotelId == id, // Filter by HotelId
+            r => new RoomGeneralInfoProjection
+            {
+                Id = r.Id,
+                Number = r.Number,
+                Type = r.Type,
+                PricePerNight = r.PricePerNight,
+                Status = r.Status,
+                HotelId = r.HotelId,
+                Bookings = r.Bookings
+                    .Select(b => new BookingMinifiedInfoProjection
+                    {
+                        Id = b.Id,
+                        CheckIn = b.CheckIn,
+                        CheckOut = b.CheckOut,
+                    })
+                    .OrderBy(b => b.CheckIn)
+                    .ToList()
+            },
+            new[] { numberOrderClause } // Order by room number
+        );
     }
 
+    /// <summary>
+    /// Gets all rooms with minified information.
+    /// </summary>
+    /// <returns>A collection of <see cref="RoomMinifiedInfoProjection"/>.</returns>
     public IEnumerable<RoomMinifiedInfoProjection> GetAllMinified()
     {
         var numberOrderClause = new OrderClause<Room> { Expression = r => r.Number };
