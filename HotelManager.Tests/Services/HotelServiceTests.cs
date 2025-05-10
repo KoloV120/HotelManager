@@ -32,7 +32,6 @@ namespace HotelManager.Tests.Services
         [Fact]
         public void Create_ValidHotel_ReturnsTrue()
         {
-            // Arrange
             var hotel = new Hotel
             {
                 Id = Guid.NewGuid(),
@@ -43,10 +42,8 @@ namespace HotelManager.Tests.Services
             };
             _hotelRepositoryMock.Setup(x => x.Create(It.IsAny<Hotel>()));
 
-            // Act
             var result = _sut.Create(hotel);
 
-            // Assert
             result.Should().BeTrue();
             _hotelRepositoryMock.Verify(x => x.Create(It.Is<Hotel>(h => 
                 h.Id == hotel.Id && 
@@ -57,7 +54,6 @@ namespace HotelManager.Tests.Services
         [Fact]
         public void GetRoomsPerFloor_ExistingHotel_ReturnsCorrectNumber()
         {
-            // Arrange
             var hotelId = Guid.NewGuid();
             var expectedRoomsPerFloor = 10;
             var hotel = new Hotel 
@@ -70,17 +66,14 @@ namespace HotelManager.Tests.Services
             _hotelRepositoryMock.Setup(x => x.Get(It.IsAny<System.Linq.Expressions.Expression<Func<Hotel, bool>>>()))
                 .Returns(hotel);
 
-            // Act
             var result = _sut.GetRoomsPerFloor(hotelId);
 
-            // Assert
             result.Should().Be(expectedRoomsPerFloor);
         }
 
         [Fact]
         public void GetHotelInfo_ValidId_ReturnsCorrectData()
         {
-            // Arrange
             var hotelId = Guid.NewGuid();
             var hotel = new Hotel 
             { 
@@ -93,10 +86,8 @@ namespace HotelManager.Tests.Services
             _hotelRepositoryMock.Setup(x => x.Get(It.IsAny<System.Linq.Expressions.Expression<Func<Hotel, bool>>>()))
                 .Returns(hotel);
 
-            // Act
             var result = _sut.GetHotelInfo(hotelId);
 
-            // Assert
             result.Should().NotBeNull();
             result.HotelName.Should().Be(hotel.Name);
         }
@@ -104,7 +95,6 @@ namespace HotelManager.Tests.Services
         [Fact]
         public void GetHotelInfo_ShouldReturnDashboardData()
         {
-            // Arrange
             var hotelId = Guid.NewGuid();
             var hotel = new Hotel 
             { 
@@ -125,10 +115,8 @@ namespace HotelManager.Tests.Services
                 .Setup(x => x.GetAll())
                 .Returns(new List<RoomGeneralInfoProjection>());
 
-            // Act
             var result = _sut.GetHotelInfo(hotelId);
 
-            // Assert
             result.Should().NotBeNull();
             result.HotelName.Should().Be(hotel.Name);
         }
@@ -136,7 +124,6 @@ namespace HotelManager.Tests.Services
         [Fact]
         public void GetMonthlyRevenue_ShouldCalculateCorrectly()
         {
-            // Arrange
             var hotelId = Guid.NewGuid();
             var guestId = Guid.NewGuid();
             var roomId = Guid.NewGuid();
@@ -170,17 +157,15 @@ namespace HotelManager.Tests.Services
                 .Setup(x => x.GetAll())
                 .Returns(bookings);
 
-            // Act
             var result = _sut.GetMonthlyRevenue(hotelId);
 
-            // Assert
-            result.Should().Be(200); // 2 nights * 100 per night
+
+            result.Should().Be(200); 
         }
 
         [Fact]
         public void GetCurrentGuestsCount_ShouldReturnCorrectCount()
         {
-            // Arrange
             var hotelId = Guid.NewGuid();
             var guestId = Guid.NewGuid();
             var roomId = Guid.NewGuid();
@@ -214,16 +199,13 @@ namespace HotelManager.Tests.Services
                 .Setup(x => x.GetAll())
                 .Returns(bookings);
 
-            // Act
             var result = _sut.GetCurrentGuestsCount(hotelId);
 
-            // Assert
             result.Should().Be(0);
         }
 [Fact]
         public void GetAllBookings_ShouldReturnBookingsForGivenHotelId_OrderedByCheckInDescending()
         {
-            // Arrange
             var hotelId = Guid.NewGuid();
             var otherHotelId = Guid.NewGuid();
 
@@ -263,7 +245,7 @@ namespace HotelManager.Tests.Services
                         Type = "Double"
                     }
                 },
-                // Booking for another hotel (should not be included)
+
                 new BookingGeneralInfoProjection
                 {
                     Id = Guid.NewGuid(),
@@ -285,18 +267,18 @@ namespace HotelManager.Tests.Services
 
             _bookingServiceMock.Setup(x => x.GetAll()).Returns(bookings);
 
-            // Act
+
             var result = _sut.GetAllBookings(hotelId).ToList();
 
-            // Assert
+
             result.Should().HaveCount(2);
-            result[0].CheckIn.Should().BeAfter(result[1].CheckIn); // Ordered descending
+            result[0].CheckIn.Should().BeAfter(result[1].CheckIn); 
             result.All(b => b.Room.HotelId == hotelId).Should().BeTrue();
         }
         [Fact]
         public void GetAllRooms_ShouldReturnRoomsForGivenHotelId()
         {
-            // Arrange
+
             var hotelId = Guid.NewGuid();
             var otherHotelId = Guid.NewGuid();
 
@@ -336,17 +318,16 @@ namespace HotelManager.Tests.Services
 
             _roomServiceMock.Setup(x => x.GetAll()).Returns(rooms);
 
-            // Act
+
             var result = _sut.GetAllRooms(hotelId).ToList();
 
-            // Assert
+
             result.Should().HaveCount(2);
             result.All(r => r.HotelId == hotelId).Should().BeTrue();
         }
         [Fact]
         public void GetAllMinified_ShouldReturnAllHotelsMinified()
         {
-            // Arrange
             var hotels = new List<Hotel>
             {
                 new Hotel { Id = Guid.NewGuid(), Name = "Hotel Alpha" },
@@ -367,10 +348,8 @@ namespace HotelManager.Tests.Services
                     return hotels.Where(filter).Select(selector);
                 });
 
-            // Act
             var result = _sut.GetAllMinified().ToList();
 
-            // Assert
             result.Should().HaveCount(2);
             result[0].Name.Should().Be("Hotel Alpha");
             result[1].Name.Should().Be("Hotel Beta");
@@ -378,7 +357,6 @@ namespace HotelManager.Tests.Services
         [Fact]
         public void GetAll_ShouldReturnAllHotelsWithRooms()
         {
-            // Arrange
             var hotelId = Guid.NewGuid();
             var hotels = new List<Hotel>
             {
@@ -428,10 +406,8 @@ namespace HotelManager.Tests.Services
                     return hotels.Where(filter).Select(selector);
                 });
 
-            // Act
             var result = _sut.GetAll().ToList();
 
-            // Assert
             result.Should().HaveCount(1);
             var hotel = result.First();
             hotel.Name.Should().Be("Hotel Alpha");
