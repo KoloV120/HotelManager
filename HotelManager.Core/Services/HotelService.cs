@@ -79,7 +79,19 @@ public class HotelService : BaseService<Hotel>, IHotelService
             a => new HotelMinifiedInfoProjection
             {
                 Id = a.Id,
-                Name = a.Name
+                Name = a.Name,
+                Rooms = a.Rooms
+                    .Select(s => new RoomMinifiedInfoProjection
+                    {
+                        Id = s.Id,
+                        Number = s.Number,
+                        PricePerNight = s.PricePerNight,
+                        HotelId = s.HotelId,
+                        Status = s.Status,
+                        Type = s.Type
+                    })
+                    .OrderBy(s => s.Number)
+                    .ToList()
             },
             new[] { nameOrderClause });
     }
