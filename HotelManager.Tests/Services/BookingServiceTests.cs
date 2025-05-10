@@ -23,6 +23,14 @@ namespace HotelManager.Tests.Services
             _sut = new BookingService(_bookingRepositoryMock.Object);
         }
 
+        /// <summary>
+        /// Tests the <see cref="BookingService.IsRoomAvailable"/> method to ensure it returns <c>true</c> when there are no conflicting bookings for the specified room and dates.
+        /// </summary>
+        /// <remarks>
+        /// This test verifies that the method correctly determines room availability when no bookings overlap with the specified check-in and check-out dates.
+        /// It mocks the <see cref="IRepository{Booking}.GetMany"/> method to return an empty list of bookings, simulating no conflicts.
+        /// The test ensures that the result is <c>true</c>.
+        /// </remarks>
         [Fact]
         public void IsRoomAvailable_NoConflictingBookings_ReturnsTrue()
         {
@@ -39,6 +47,14 @@ namespace HotelManager.Tests.Services
             result.Should().BeTrue();
         }
 
+        /// <summary>
+        /// Tests the <see cref="BookingService.Create"/> method to ensure it successfully creates a valid booking.
+        /// </summary>
+        /// <remarks>
+        /// This test verifies that the method calls the repository's <see cref="IRepository{T}.Create"/> method with the correct booking object.
+        /// It mocks the repository to simulate the creation process and checks that the method returns <c>true</c> upon successful creation.
+        /// The test also ensures that the repository's <see cref="IRepository{T}.Create"/> method is called exactly once with the expected booking object.
+        /// </remarks>
         [Fact]
         public void Create_ValidBooking_ReturnsTrue()
         {
@@ -58,6 +74,14 @@ namespace HotelManager.Tests.Services
             _bookingRepositoryMock.Verify(x => x.Create(booking), Times.Once);
         }
 
+        /// <summary>
+        /// Tests the <see cref="BookingService.GetAll"/> method to ensure it returns all bookings with their general information.
+        /// </summary>
+        /// <remarks>
+        /// This test verifies that the method retrieves all bookings and maps them to the <see cref="BookingGeneralInfoProjection"/> format.
+        /// It mocks the <see cref="IRepository{Booking}.GetMany"/> method to return a predefined list of bookings.
+        /// The test ensures that the result is not empty and that each booking contains valid guest and room information.
+        /// </remarks>
         [Fact]
         public void GetAll_ShouldReturnAllBookings()
         {
@@ -96,7 +120,7 @@ namespace HotelManager.Tests.Services
                         Id = b.Room.Id,
                         Number = b.Room.Number,
                         Status = "Available",
-                        Type = "Standard",
+                        Type = "Single",
                         PricePerNight = 100,
                         HotelId = Guid.NewGuid()
                     }
@@ -109,6 +133,15 @@ namespace HotelManager.Tests.Services
             result.First().Room.Should().NotBeNull();
         }
 
+        /// <summary>
+        /// Tests the <see cref="BookingService.IsRoomAvailable"/> method to ensure it returns the correct room availability status.
+        /// </summary>
+        /// <remarks>
+        /// This test verifies that the method correctly determines whether a room is available for the specified check-in and check-out dates.
+        /// It uses a parameterized test with <see cref="InlineDataAttribute"/> to test both availability scenarios (true and false).
+        /// It mocks the <see cref="IRepository{Booking}.GetMany"/> method to return a predefined list of bookings based on the expected availability.
+        /// The test ensures that the result matches the expected availability status.
+        /// </remarks>
         [Theory]
         [InlineData(true)]  
         [InlineData(false)] 
@@ -133,7 +166,7 @@ namespace HotelManager.Tests.Services
                         { 
                             Id = roomId,
                             Number = 101,
-                            Type = "Standard",
+                            Type = "Single",
                             Status = "Available",
                             PricePerNight = 100,
                             HotelId = Guid.NewGuid()
@@ -157,6 +190,15 @@ namespace HotelManager.Tests.Services
 
             result.Should().Be(expectedAvailability);
         }
+
+        /// <summary>
+        /// Tests the <see cref="BookingService.GetAllMinified"/> method to ensure it returns all bookings in a minified format.
+        /// </summary>
+        /// <remarks>
+        /// This test verifies that the method retrieves all bookings and maps them to the <see cref="BookingMinifiedInfoProjection"/> format.
+        /// It mocks the <see cref="IRepository{Booking}.GetMany"/> method to return a predefined list of bookings.
+        /// The test ensures that the result contains the expected number of bookings and verifies the check-in dates of the returned bookings.
+        /// </remarks>
         [Fact]
         public void GetAllMinified_ShouldReturnAllBookingsMinified()
         {

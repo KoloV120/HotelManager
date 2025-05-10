@@ -234,7 +234,7 @@ namespace HotelManager.Tests.Services
                     { 
                         Id = roomId,
                         Number = 101,
-                        Type = "Standard",
+                        Type = "Single",
                         Status = "Available",
                         PricePerNight = 100,
                         HotelId = hotelId 
@@ -248,7 +248,7 @@ namespace HotelManager.Tests.Services
 
             var result = _sut.GetCurrentGuestsCount(hotelId);
 
-            result.Should().Be(0);
+            result.Should().Be(1);
         }
 
         /// <summary>
