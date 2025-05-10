@@ -22,6 +22,14 @@ namespace HotelManager.Tests.Services
             _sut = new RoomService(_roomRepositoryMock.Object);
         }
 
+
+        /// <summary>
+        /// Tests the <see cref="RoomService.Create"/> method to ensure it successfully creates a valid room.
+        /// </summary>
+        /// <remarks>
+        /// This test verifies that the method calls the repository's <see cref="IRepository{T}.Create"/> method with the correct room object.
+        /// It mocks the repository to simulate the creation process and checks that the method returns <c>true</c> upon successful creation.
+        /// </remarks>
         [Fact]
         public void Create_ValidRoom_ReturnsTrue()
         {
@@ -42,6 +50,14 @@ namespace HotelManager.Tests.Services
             _roomRepositoryMock.Verify(x => x.Create(room), Times.Once);
         }
 
+
+        /// <summary>
+        /// Tests the <see cref="RoomService.GetAllByHotelId"/> method to ensure it returns only the rooms associated with the specified hotel ID.
+        /// </summary>
+        /// <remarks>
+        /// This test verifies that the method filters rooms by the provided hotel ID and correctly maps them to the <see cref="RoomGeneralInfoProjection"/> format.
+        /// It mocks the repository to return a predefined list of rooms and checks that the result contains only rooms belonging to the specified hotel.
+        /// </remarks>
         [Fact]
         public void GetAllByHotelId_ReturnsCorrectRooms()
         {
@@ -53,7 +69,7 @@ namespace HotelManager.Tests.Services
                     Id = Guid.NewGuid(),
                     HotelId = hotelId,
                     Number = 101,
-                    Type = "Standard",
+                    Type = "Single",
                     PricePerNight = 100,
                     Status = "Available",
                     Bookings = new List<Booking>()
@@ -63,7 +79,7 @@ namespace HotelManager.Tests.Services
                     Id = Guid.NewGuid(),
                     HotelId = hotelId,
                     Number = 102,
-                    Type = "Deluxe",
+                    Type = "Double",
                     PricePerNight = 150,
                     Status = "Available",
                     Bookings = new List<Booking>()
@@ -93,6 +109,14 @@ namespace HotelManager.Tests.Services
             result.All(r => r.HotelId == hotelId).Should().BeTrue();
         }
 
+
+        /// <summary>
+        /// Tests the <see cref="RoomService.GetAll"/> method to ensure it returns all rooms with general information.
+        /// </summary>
+        /// <remarks>
+        /// This test verifies that the method retrieves all rooms from the repository and correctly maps them to the <see cref="RoomGeneralInfoProjection"/> format.
+        /// It mocks the repository to return a predefined list of rooms and checks that the result matches the expected output.
+        /// </remarks>
         [Fact]
         public void GetAll_ShouldReturnAllRooms()
         {
@@ -102,7 +126,7 @@ namespace HotelManager.Tests.Services
                 {
                     Id = Guid.NewGuid(),
                     Number = 101,
-                    Type = "Standard",
+                    Type = "Single",
                     PricePerNight = 100,
                     Status = "Available",
                     HotelId = Guid.NewGuid(),
@@ -131,8 +155,16 @@ namespace HotelManager.Tests.Services
             result.Should().NotBeEmpty();
             var room = result.First();
             room.Number.Should().Be(101);
-            room.Type.Should().Be("Standard");
+            room.Type.Should().Be("Single");
         }
+
+        /// <summary>
+        /// Tests the <see cref="RoomService.GetAllMinified"/> method to ensure it returns all rooms in a minified format.
+        /// </summary>
+        /// <remarks>
+        /// This test verifies that the method correctly filters and projects room data into a simplified format.
+        /// It mocks the repository to return a predefined list of rooms and checks that the result matches the expected output.
+        /// </remarks>
         [Fact]
         public void GetAllMinified_ShouldReturnAllRoomsMinified()
         {
@@ -145,7 +177,7 @@ namespace HotelManager.Tests.Services
                     PricePerNight = 100,
                     Status = "Available",
                     HotelId = Guid.NewGuid(),
-                    Type = "Standard"
+                    Type = "Single"
                 },
                 new Room
                 {
