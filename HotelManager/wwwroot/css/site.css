@@ -35,7 +35,7 @@ body {
 
 /* Navigation Bar */
 nav {
-    background-color: #FFE6EC; /* Set the navigation bar color to #d39ca2 */
+    background-color: rgba(255, 255, 255, 0.3); /* Set the navigation bar color to #d39ca2 */
     border-right: 1px solid #c28b91; /* Optional: Slightly darker border for contrast */
     height: 100vh; /* Ensure the navigation bar spans the full height of the viewport */
 }
@@ -63,4 +63,19 @@ footer {
   border-top: 1px solid #dee2e6; /* Light border */
   padding: 10px 0;
   text-align: center;
+}
+
+/* Transparent Card Background */
+.card {
+    background-color: rgba(255, 255, 255, 0.4); /* White with 80% opacity */
+    border: 1px solid rgba(0, 0, 0, 0.1); /* Subtle border for contrast */
+    backdrop-filter: blur(5px); /* Optional: Adds a blur effect to the background */
+    transition: all 0.3s ease-in-out; /* Smooth transition for hover effects */
+}
+
+/* Add New Hotel Card */
+.card.border-dashed {
+    background-color: rgba(255, 255, 255, 0.2); /* Slightly more transparent */
+    border: 2px dashed rgba(0, 0, 0, 0.2); /* Dashed border with subtle contrast */
+    backdrop-filter: blur(5px); /* Optional: Adds a blur effect to the background */
 }
