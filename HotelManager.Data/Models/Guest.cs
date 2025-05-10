@@ -1,5 +1,3 @@
-using System;
-
 namespace HotelManager.Data.Models;
 
 public class Guest : IIdentifiable
@@ -12,6 +10,5 @@ public class Guest : IIdentifiable
 
     public string Email { get; set; } = string.Empty;
 
-    // Navigation property
     public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
 }
