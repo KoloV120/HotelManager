@@ -105,4 +105,31 @@ public class RoomService : BaseService<Room>, IRoomService
             },
             new[] { numberOrderClause });
     }
+    public bool IsRoomCurrentlyBooked(Guid roomId)
+    {
+        var today = DateTime.Today;
+
+        return this.Repository.GetMany(
+            r => r.Id == roomId,
+            r => r.Bookings.Any(b => b.CheckIn <= today && b.CheckOut >= today)
+        ).Any();
+    }
+
+    public void UpdateRoomStatus(Guid roomId)
+    {
+        var today = DateTime.Today;
+
+        var isBooked = IsRoomCurrentlyBooked(roomId);
+
+        var room = this.Repository.Get(room => room.Id == roomId);
+        if (room != null)
+        {
+            var newStatus = isBooked ? "Booked" : "Available";
+            if (room.Status != newStatus)
+            {
+                room.Status = newStatus;
+                this.Repository.Update(room);
+            }
+        }
+    }
 }

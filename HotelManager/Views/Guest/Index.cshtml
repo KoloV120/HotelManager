@@ -17,7 +17,8 @@
         </div>
     }
 
-    <table class="table table-bordered">
+    <!-- Guest Table -->
+    <table class="custom-table table-bordered" style="width:100%;height:100%;">
         <thead>
             <tr>
                 <th>Name</th>
@@ -34,7 +35,8 @@
                     <td>@guest.Email</td>
                     <td>@guest.Phone</td>
                     <td class="text-center align-middle">
-                        <a asp-action="CallToReception" asp-route-guestId="@guest.Id" asp-route-id="@ViewData["HotelId"]" class="btn btn-dark btn-sm">
+                        <a asp-action="CallToReception" asp-route-guestId="@guest.Id" asp-route-id="@ViewData["HotelId"]"
+                            class="btn btn-dark btn-sm">
                             <i class="bi bi-telephone"></i>
                         </a>
                     </td>

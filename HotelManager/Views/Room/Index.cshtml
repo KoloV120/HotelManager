@@ -23,14 +23,12 @@
     }
 
     <!-- Add Room Button -->
-    <button type="button" class="btn mb-4"
-        style="background-color: #e75480; border: #b83761;color: white; --active-bg-color: #c03d66; --active-border-color: #993452;--active-color:#f0f0f0;" data-bs-toggle="modal"
-        data-bs-target="#addRoomModal">
+    <button type="button" class="btn mb-4 button-important" data-bs-toggle="modal" data-bs-target="#addRoomModal">
         <i class="bi bi-plus-circle"></i> Add Room
     </button>
 
     <!-- Room Table -->
-    <table class="table table-striped">
+    <table class="custom-table table-striped">
         <thead>
             <tr>
                 <th>Number</th>
@@ -50,15 +48,16 @@
                     <td>@room.Status</td>
                     <td>
                         <!-- Edit Room Button -->
-                        <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal"
-                            data-bs-target="#editRoomModal-@room.Id">
+                        <button type="button" class="btn btn-warning btn-sm" style="background-color:#ff7f50;"
+                            data-bs-toggle="modal" data-bs-target="#editRoomModal-@room.Id">
                             Edit
                         </button>
 
                         <!-- Delete Room Button -->
                         <form asp-controller="Room" asp-action="DeleteRoom" method="post" class="d-inline">
                             <input type="hidden" name="id" value="@room.Id" />
-                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                            <button type="submit" class="btn btn-danger btn-sm"
+                                style="background-color:#d00000;">Delete</button>
                         </form>
                     </td>
                 </tr>

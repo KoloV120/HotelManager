@@ -10,4 +10,8 @@ public interface IRoomService : IService<Room>
     IEnumerable<RoomMinifiedInfoProjection> GetAllMinified();
 
     IEnumerable<RoomGeneralInfoProjection> GetAllByHotelId(Guid id);
+
+    public bool IsRoomCurrentlyBooked(Guid roomId);
+
+    public void UpdateRoomStatus(Guid roomId);
 }

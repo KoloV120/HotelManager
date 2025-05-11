@@ -21,11 +21,6 @@
         </div>
     }
 
-    <!-- Add Booking Button -->
-    <button type="button" class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#addBookingModal">
-        <i class="bi bi-plus-circle"></i> Add Booking
-    </button>
-
     <!-- Booking Table -->
     <table class="table table-striped">
         <thead>
@@ -52,56 +47,12 @@
                         <form asp-controller="Booking" asp-action="DeleteBooking" method="post" class="d-inline">
                             <input type="hidden" name="id" value="@booking.Id" />
                             <input type="hidden" name="hotelId" value="@ViewData["HotelId"]" />
-                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                            <button type="submit" class="btn btn-danger btn-sm"
+                                style="background-color:#d00000">Delete</button>
                         </form>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
-</div>
-
-<!-- Add Booking Modal -->
-<div class="modal fade" id="addBookingModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Add Booking</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <form asp-controller="Booking" asp-action="AddBooking" method="post">
-                <div class="modal-body">
-                    <input type="hidden" name="HotelId" value="@ViewData["HotelId"]" />
-                    <div class="mb-3">
-                        <label class="form-label">Guest</label>
-                        <select name="GuestId" class="form-select" required>
-                            <!-- Populate with guests dynamically -->
-                            <option value="">Select a guest...</option>
-                            @* Example: <option value="guestId">Guest Name</option> *@
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Room</label>
-                        <select name="RoomId" class="form-select" required>
-                            <!-- Populate with available rooms dynamically -->
-                            <option value="">Select a room...</option>
-                            @* Example: <option value="roomId">Room Number</option> *@
-                        </select>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Check-In</label>
-                        <input type="date" class="form-control" name="CheckIn" required />
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Check-Out</label>
-                        <input type="date" class="form-control" name="CheckOut" required />
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Add Booking</button>
-                </div>
-            </form>
-        </div>
-    </div>
 </div>

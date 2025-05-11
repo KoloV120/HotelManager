@@ -8,7 +8,11 @@ html {
   }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
@@ -17,70 +21,153 @@ html {
   min-height: 100%;
 }
 
-/* General Styles */
 body {
   margin-bottom: 60px;
-  background-color: #f8f9fa; /* Light background */
-  color: #212529; /* Dark text */
+  background-color: #f8f9fa;
+  color: #212529;
+  font-family: 'Cinzel', sans-serif;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
+.form-floating>.form-control-plaintext::placeholder,
+.form-floating>.form-control::placeholder {
   color: var(--bs-secondary-color);
   text-align: end;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
+.form-floating>.form-control-plaintext:focus::placeholder,
+.form-floating>.form-control:focus::placeholder {
   text-align: start;
 }
 
-/* Navigation Bar */
+
 nav {
-    background-color: rgba(255, 255, 255, 0.3); /* Set the navigation bar color to #d39ca2 */
-    border-right: 1px solid #c28b91; /* Optional: Slightly darker border for contrast */
-    height: 100vh; /* Ensure the navigation bar spans the full height of the viewport */
+  background-color: rgba(255, 255, 255, 0.3);
+  border-right: 1px solid #c28b91;
+  height: 100vh;
 }
 
 nav .nav-link {
-    color: #ffffff; /* White text for better contrast */
-    font-size: 1.1rem;
-    padding: 10px 15px;
-    border-radius: 5px;
+  color: #ffffff;
+  font-size: 1.1rem;
+  padding: 10px 15px;
+  border-radius: 5px;
 }
 
 nav .nav-link:hover {
-    background-color: #c28b91; /* Slightly darker pink on hover */
-    color: #ffffff; /* Keep text white on hover */
+  background-color: #c28b91;
+  color: #ffffff;
 }
 
-/* Main Content */
+
 main {
-  margin-left: 250px; /* Prevent overlap with the fixed navigation bar */
+  margin-left: 250px;
 }
 
 /* Footer */
 footer {
-  background-color: #f8f9fa; /* Light background */
-  border-top: 1px solid #dee2e6; /* Light border */
+  background-color: #f8f9fa;
+  border-top: 1px solid #dee2e6;
   padding: 10px 0;
   text-align: center;
 }
 
-.btn:active {
-        background-color: var(--active-bg-color) !important;
-        border-color: var(--active-border-color) !important;
-        color: var(--active-color) !important;
-    }
-/* Transparent Card Background */
+
 .card {
-    background-color: rgba(255, 255, 255, 0.4); /* White with 80% opacity */
-    border: 1px solid rgba(0, 0, 0, 0.1); /* Subtle border for contrast */
-    backdrop-filter: blur(5px); /* Optional: Adds a blur effect to the background */
-    transition: all 0.3s ease-in-out; /* Smooth transition for hover effects */
+  background-color: rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px);
+  transition: all 0.3s ease-in-out;
 }
 
 /* Add New Hotel Card */
 .card.border-dashed {
-    background-color: rgba(255, 255, 255, 0.2); /* Slightly more transparent */
-    border: 2px dashed rgba(0, 0, 0, 0.2); /* Dashed border with subtle contrast */
-    backdrop-filter: blur(5px); /* Optional: Adds a blur effect to the background */
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 2px dashed rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(5px);
+}
+
+
+
+
+
+.custom-table {
+  border-collapse: collapse;
+  width: 100%;
+  color: #ffffff;
+}
+
+.custom-table th {
+  background-color: #3a1c4d;
+  color: white;
+  padding: 0.75rem;
+  text-align: left;
+}
+
+.custom-table td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #e6d9f5;
+}
+
+.custom-table tr:nth-child(odd) {
+  background-color: #4b345c;
+}
+
+.custom-table tr:nth-child(even) {
+  background-color: #5a3e6f;
+}
+
+.custom-table tr:hover {
+  background-color: #6c3c5e;
+}
+
+.button-important {
+  background-color: #d63384;
+  color: white;
+  border: 2px solid #b92f6c;
+  font-weight: bold;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(214, 51, 132, 0.3);
+  transition: background-color 0.2s ease;
+}
+
+.button-important:active {
+  background-color: #b92f6c;
+  color: white;
+  border: 2px solid #b92f6c;
+  font-weight: bold;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(214, 51, 132, 0.3);
+  transition: background-color 0.2s ease;
+}
+
+.button-important:hover {
+  background-color: #b92f6c;
+}
+
+.button-secondary {
+  background-color: rgba(214, 51, 132, 0.4);
+  color: #fff;
+  border: 2px solid rgba(147, 47, 97, 0.4);
+  padding: 0.6rem 1.2rem;
+  font-weight: 500;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(163, 100, 121, 0.2);
+  transition: background-color 0.2s ease;
+}
+
+.button-secondary:active {
+  background-color: rgba(133, 77, 98, 0.4);
+  color: #fff;
+  border: 2px solid rgba(147, 47, 97, 0.4);
+  padding: 0.6rem 1.2rem;
+  font-weight: 500;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(163, 100, 121, 0.2);
+  transition: background-color 0.2s ease;
+}
+
+.button-secondary:hover {
+  background-color: #854d62;
 }

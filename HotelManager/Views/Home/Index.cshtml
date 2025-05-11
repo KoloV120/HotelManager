@@ -6,7 +6,7 @@
 
 <div class="container mt-4">
     <div class="text-center mb-5">
-        <h1 class="display-4">🏨 Hotel Manager</h1>
+        <h1 class="display-4">Hotel Manager</h1>
         <p class="lead">Select a hotel to manage or add a new one</p>
     </div>
 
@@ -34,7 +34,7 @@
                     </div>
                     <div class="card-footer bg-transparent border-top-0">
                         <a asp-controller="HotelManagement" asp-action="ManageHotel" asp-route-id="@hotel.Id"
-                            class="btn btn-primary w-100">
+                            class="btn button-important w-100">
                             Manage Hotel
                         </a>
                     </div>
@@ -68,7 +68,7 @@
         <div class="col">
             <div class="card h-100 shadow-sm border-dashed">
                 <div class="card-body d-flex align-items-center justify-content-center">
-                    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
+                    <button type="button" class="btn button-secondary" data-bs-toggle="modal"
                         data-bs-target="#addHotelModal">
                         <i class="bi bi-plus-lg"></i> Add New Hotel
                     </button>

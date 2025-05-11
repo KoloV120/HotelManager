@@ -93,6 +93,7 @@ public class BookingController : Controller
                 CheckOut = model.CheckOut,
                 Status = "Confirmed"
             };
+            _roomService.UpdateRoomStatus(model.RoomId);
 
             _bookingService.Create(booking);
             TempData["Success"] = "Booking added successfully!";
@@ -120,7 +121,7 @@ public class BookingController : Controller
                 TempData["Success"] = "Booking deleted successfully!";
             }
 
-            return RedirectToAction(nameof(Index), new { hotelId });
+            return RedirectToAction(nameof(Index), new { id=hotelId });
         }
         catch (Exception ex)
         {

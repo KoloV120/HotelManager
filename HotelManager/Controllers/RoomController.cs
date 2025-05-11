@@ -12,7 +12,7 @@ public class RoomController : Controller
     private readonly ILogger<RoomController> _logger;
 
 
-    public RoomController(IRoomService roomService, IHotelService hotelService,ILogger<RoomController> logger)
+    public RoomController(IRoomService roomService, IHotelService hotelService, ILogger<RoomController> logger)
     {
         _roomService = roomService;
         _hotelService = hotelService;
@@ -22,7 +22,7 @@ public class RoomController : Controller
 
     public IActionResult Index(Guid id)
     {
-        ViewData["HotelId"] = id; // Pass the HotelId to the view
+        ViewData["HotelId"] = id;
         var rooms = _roomService.GetAllByHotelId(id);
         var viewModel = rooms.Select(r => new RoomViewModel
         {

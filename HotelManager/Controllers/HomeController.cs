@@ -84,7 +84,6 @@ public class HomeController : Controller
     {
         try
         {
-            // Attempt to delete the hotel using the service
             bool success = _hotelService.Delete(id);
 
             if (!success)
