@@ -6,11 +6,19 @@ using HotelManager.Data.Models;
 
 namespace HotelManager.Controllers;
 
+/// <summary>
+/// Controller for managing the home page and hotel-related operations.
+/// </summary>
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
     private readonly IHotelService _hotelService;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="HomeController"/> class.
+    /// </summary>
+    /// <param name="hotelService">The hotel service for managing hotel-related operations.</param>
+    /// <param name="logger">The logger for logging information and errors.</param>
     public HomeController(
         IHotelService hotelService,
         ILogger<HomeController> logger)
@@ -19,6 +27,10 @@ public class HomeController : Controller
         _logger = logger;
     }
 
+    /// <summary>
+    /// Displays the dashboard with a list of hotels.
+    /// </summary>
+    /// <returns>The view displaying the dashboard.</returns>
     public IActionResult Index()
     {
         try
@@ -44,6 +56,12 @@ public class HomeController : Controller
             return View("Error", new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
+
+    /// <summary>
+    /// Adds a new hotel to the system.
+    /// </summary>
+    /// <param name="model">The input model containing hotel details.</param>
+    /// <returns>A redirect to the dashboard view.</returns>
     public IActionResult AddHotel([FromForm] HotelInputModel model)
     {
         if (!ModelState.IsValid)
@@ -79,6 +97,11 @@ public class HomeController : Controller
         }
     }
 
+    /// <summary>
+    /// Deletes a hotel from the system.
+    /// </summary>
+    /// <param name="id">The unique identifier of the hotel to delete.</param>
+    /// <returns>A redirect to the dashboard view.</returns>
     [HttpPost]
     public IActionResult DeleteHotel([FromForm] Guid id)
     {
@@ -100,6 +123,10 @@ public class HomeController : Controller
         }
     }
 
+    /// <summary>
+    /// Displays the error page.
+    /// </summary>
+    /// <returns>The error view with error details.</returns>
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {

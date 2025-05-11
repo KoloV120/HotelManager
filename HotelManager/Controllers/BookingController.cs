@@ -7,6 +7,9 @@ using System.Diagnostics;
 
 namespace HotelManager.Controllers;
 
+/// <summary>
+/// Controller for managing bookings in the hotel management system.
+/// </summary>
 public class BookingController : Controller
 {
     private readonly IBookingService _bookingService;
@@ -15,6 +18,14 @@ public class BookingController : Controller
     private readonly IHotelService _hotelService;
     private readonly ILogger<BookingController> _logger;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="BookingController"/> class.
+    /// </summary>
+    /// <param name="bookingService">The booking service.</param>
+    /// <param name="roomService">The room service.</param>
+    /// <param name="guestService">The guest service.</param>
+    /// <param name="hotelService">The hotel service.</param>
+    /// <param name="logger">The logger for logging information and errors.</param>
     public BookingController(IBookingService bookingService, IRoomService roomService, IGuestService guestService, IHotelService hotelService, ILogger<BookingController> logger)
     {
         _bookingService = bookingService;
@@ -24,6 +35,11 @@ public class BookingController : Controller
         _logger = logger;
     }
 
+    /// <summary>
+    /// Displays the list of bookings for a specific hotel.
+    /// </summary>
+    /// <param name="id">The unique identifier of the hotel.</param>
+    /// <returns>The view displaying the list of bookings.</returns>
     public IActionResult Index(Guid id)
     {
         try
@@ -58,6 +74,11 @@ public class BookingController : Controller
         }
     }
 
+    /// <summary>
+    /// Adds a new booking to the system.
+    /// </summary>
+    /// <param name="model">The booking input model containing booking details.</param>
+    /// <returns>A redirect to the bookings index view.</returns>
     [HttpPost]
     public IActionResult AddBooking(BookingInputModel model)
     {
@@ -93,7 +114,6 @@ public class BookingController : Controller
                 CheckOut = model.CheckOut,
                 Status = "Confirmed"
             };
-            _roomService.UpdateRoomStatus(model.RoomId);
 
             _bookingService.Create(booking);
             TempData["Success"] = "Booking added successfully!";
@@ -106,6 +126,12 @@ public class BookingController : Controller
         }
     }
 
+    /// <summary>
+    /// Deletes a booking from the system.
+    /// </summary>
+    /// <param name="id">The unique identifier of the booking to delete.</param>
+    /// <param name="hotelId">The unique identifier of the hotel associated with the booking.</param>
+    /// <returns>A redirect to the bookings index view.</returns>
     [HttpPost]
     public IActionResult DeleteBooking(Guid id, Guid hotelId)
     {
@@ -121,7 +147,7 @@ public class BookingController : Controller
                 TempData["Success"] = "Booking deleted successfully!";
             }
 
-            return RedirectToAction(nameof(Index), new { id=hotelId });
+            return RedirectToAction(nameof(Index), new { id = hotelId });
         }
         catch (Exception ex)
         {

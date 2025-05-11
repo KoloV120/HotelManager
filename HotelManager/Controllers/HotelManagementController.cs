@@ -7,6 +7,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace HotelManager.Controllers;
 
+/// <summary>
+/// Controller for managing hotel-related operations, including rooms, guests, and bookings.
+/// </summary>
 public class HotelManagementController : Controller
 {
     private readonly ILogger<HotelManagementController> _logger;
@@ -15,6 +18,14 @@ public class HotelManagementController : Controller
     private readonly IRoomService _roomService;
     private readonly IGuestService _guestService;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="HotelManagementController"/> class.
+    /// </summary>
+    /// <param name="hotelService">The hotel service for managing hotel-related operations.</param>
+    /// <param name="bookingService">The booking service for managing bookings.</param>
+    /// <param name="roomService">The room service for managing rooms.</param>
+    /// <param name="guestService">The guest service for managing guests.</param>
+    /// <param name="logger">The logger for logging information and errors.</param>
     public HotelManagementController(
         IHotelService hotelService,
         IBookingService bookingService,
@@ -28,6 +39,13 @@ public class HotelManagementController : Controller
         _guestService = guestService;
         _logger = logger;
     }
+
+    /// <summary>
+    /// Sets temporary data for displaying the booking modal.
+    /// </summary>
+    /// <param name="guestId">The unique identifier of the guest.</param>
+    /// <param name="errorMessage">An optional error message to display.</param>
+    /// <param name="guestName">The name of the guest (optional).</param>
     private void SetBookingModalTempData(Guid guestId, string? errorMessage = null, string? guestName = null)
     {
         TempData["Error2"] = errorMessage;
@@ -35,6 +53,12 @@ public class HotelManagementController : Controller
         TempData["GuestId"] = guestId;
         TempData["GuestName"] = guestName ?? _guestService.GetById(guestId)?.Name;
     }
+
+    /// <summary>
+    /// Displays the hotel management dashboard for a specific hotel.
+    /// </summary>
+    /// <param name="id">The unique identifier of the hotel.</param>
+    /// <returns>The view displaying the hotel management dashboard.</returns>
     public IActionResult ManageHotel(Guid id)
     {
         try
@@ -82,6 +106,11 @@ public class HotelManagementController : Controller
         }
     }
 
+    /// <summary>
+    /// Adds a new room to the specified hotel.
+    /// </summary>
+    /// <param name="model">The input model containing room details.</param>
+    /// <returns>A redirect to the hotel management dashboard.</returns>
     [HttpPost]
     public IActionResult AddRoom(RoomInputModel model)
     {
@@ -114,10 +143,10 @@ public class HotelManagementController : Controller
                 PricePerNight = model.PricePerNight,
                 Status = "Available"
             };
-            
-            _roomService.Create(room); // Assuming you have a service to handle room operations
+
+            _roomService.Create(room);
             hotel.Rooms.Add(room);
-             TempData["Success"] = "Room added successfully!";
+            TempData["Success"] = "Room added successfully!";
             return RedirectToAction("ManageHotel", new { id = model.HotelId });
         }
         catch (Exception ex)
@@ -128,6 +157,11 @@ public class HotelManagementController : Controller
         }
     }
 
+    /// <summary>
+    /// Adds a new guest to the system and optionally opens the booking modal.
+    /// </summary>
+    /// <param name="model">The input model containing guest details.</param>
+    /// <returns>A redirect to the hotel management dashboard.</returns>
     [HttpPost]
     public IActionResult AddGuest([FromForm] GuestInputModel model)
     {
@@ -160,6 +194,11 @@ public class HotelManagementController : Controller
         }
     }
 
+    /// <summary>
+    /// Adds a new booking for a guest and room.
+    /// </summary>
+    /// <param name="model">The input model containing booking details.</param>
+    /// <returns>A redirect to the hotel management dashboard.</returns>
     [HttpPost]
     public IActionResult AddBooking([FromForm] BookingInputModel model)
     {
@@ -205,6 +244,10 @@ public class HotelManagementController : Controller
         }
     }
 
+    /// <summary>
+    /// Displays the error page.
+    /// </summary>
+    /// <returns>The error view with error details.</returns>
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {

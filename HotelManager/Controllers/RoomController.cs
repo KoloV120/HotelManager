@@ -5,13 +5,21 @@ using HotelManager.Data.Models;
 
 namespace HotelManager.Controllers;
 
+/// <summary>
+/// Controller for managing rooms in the hotel management system.
+/// </summary>
 public class RoomController : Controller
 {
     private readonly IRoomService _roomService;
     private readonly IHotelService _hotelService;
     private readonly ILogger<RoomController> _logger;
 
-
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RoomController"/> class.
+    /// </summary>
+    /// <param name="roomService">The room service for managing room-related operations.</param>
+    /// <param name="hotelService">The hotel service for managing hotel-related operations.</param>
+    /// <param name="logger">The logger for logging information and errors.</param>
     public RoomController(IRoomService roomService, IHotelService hotelService, ILogger<RoomController> logger)
     {
         _roomService = roomService;
@@ -20,6 +28,11 @@ public class RoomController : Controller
 
     }
 
+    /// <summary>
+    /// Displays the list of rooms for a specific hotel.
+    /// </summary>
+    /// <param name="id">The unique identifier of the hotel.</param>
+    /// <returns>The view displaying the list of rooms.</returns>
     public IActionResult Index(Guid id)
     {
         ViewData["HotelId"] = id;
@@ -36,6 +49,11 @@ public class RoomController : Controller
         return View(viewModel);
     }
 
+    /// <summary>
+    /// Adds a new room to the specified hotel.
+    /// </summary>
+    /// <param name="model">The input model containing room details.</param>
+    /// <returns>A redirect to the rooms index view.</returns>
     [HttpPost]
     public IActionResult AddRoom(RoomInputModel model)
     {
@@ -79,6 +97,11 @@ public class RoomController : Controller
         }
     }
 
+    /// <summary>
+    /// Edits the details of an existing room.
+    /// </summary>
+    /// <param name="model">The input model containing updated room details.</param>
+    /// <returns>A redirect to the rooms index view.</returns>
     [HttpPost]
     public IActionResult EditRoom(RoomInputModel model)
     {
@@ -112,6 +135,11 @@ public class RoomController : Controller
         }
     }
 
+    /// <summary>
+    /// Deletes a room from the system.
+    /// </summary>
+    /// <param name="id">The unique identifier of the room to delete.</param>
+    /// <returns>A redirect to the rooms index view.</returns>
     [HttpPost]
     public IActionResult DeleteRoom(Guid id)
     {
