@@ -4,12 +4,15 @@ using HotelManager.Models;
 using System.Diagnostics;
 using HotelManager.Data.Models;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace HotelManager.Controllers;
 
 /// <summary>
 /// Controller for managing hotel-related operations, including rooms, guests, and bookings.
 /// </summary>
+[Authorize]
 public class HotelManagementController : Controller
 {
     private readonly ILogger<HotelManagementController> _logger;
@@ -63,6 +66,15 @@ public class HotelManagementController : Controller
     {
         try
         {
+            // ensure current user is owner of the hotel
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
+            var hotel = _hotelService.GetById(id);
+            if (hotel == null || hotel.OwnerId != userId)
+            {
+                _logger.LogWarning("Unauthorized access attempt to hotel {HotelId} by user {UserId}", id, userId);
+                return Forbid();
+            }
+
             var dashboardData = _hotelService.GetHotelInfo(id);
             var guests = _guestService.GetAllMinified();
 

@@ -65,6 +65,36 @@ public class HotelService : BaseService<Hotel>, IHotelService
             new[] { nameOrderClause });
     }
 
+    public IEnumerable<HotelGeneralInfoProjection> GetAllForOwner(string ownerId)
+    {
+        var nameOrderClause = new OrderClause<Hotel> { Expression = a => a.Name };
+
+        return this.Repository.GetMany(
+            a => a.OwnerId == ownerId,
+            a => new HotelGeneralInfoProjection
+            {
+                Id = a.Id,
+                Name = a.Name,
+                Address = a.Address,
+                City = a.City,
+                Email = a.Email,
+                RoomsPerFloor = a.RoomsPerFloor,
+                Rooms = a.Rooms
+                    .Select(s => new RoomMinifiedInfoProjection
+                    {
+                        Id = s.Id,
+                        Number = s.Number,
+                        PricePerNight = s.PricePerNight,
+                        HotelId = s.HotelId,
+                        Status = s.Status,
+                        Type = s.Type
+                    })
+                    .OrderBy(s => s.Number)
+                    .ToList()
+            },
+            new[] { nameOrderClause });
+    }
+
     /// <summary>
     /// Gets all hotels with minified information.
     /// </summary>
@@ -75,6 +105,32 @@ public class HotelService : BaseService<Hotel>, IHotelService
 
         return this.Repository.GetMany(
             _ => true,
+            a => new HotelMinifiedInfoProjection
+            {
+                Id = a.Id,
+                Name = a.Name,
+                Rooms = a.Rooms
+                    .Select(s => new RoomMinifiedInfoProjection
+                    {
+                        Id = s.Id,
+                        Number = s.Number,
+                        PricePerNight = s.PricePerNight,
+                        HotelId = s.HotelId,
+                        Status = s.Status,
+                        Type = s.Type
+                    })
+                    .OrderBy(s => s.Number)
+                    .ToList()
+            },
+            new[] { nameOrderClause });
+    }
+
+    public IEnumerable<HotelMinifiedInfoProjection> GetAllMinifiedForOwner(string ownerId)
+    {
+        var nameOrderClause = new OrderClause<Hotel> { Expression = a => a.Name };
+
+        return this.Repository.GetMany(
+            a => a.OwnerId == ownerId,
             a => new HotelMinifiedInfoProjection
             {
                 Id = a.Id,

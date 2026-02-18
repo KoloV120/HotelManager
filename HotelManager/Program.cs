@@ -1,5 +1,6 @@
 using HotelManager.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 using HotelManager.Core.Configuration;
 using System.Globalization;
 
@@ -18,7 +19,20 @@ if (string.IsNullOrEmpty(connectionString))
     throw new InvalidOperationException("Connection string 'DefaultConnection' is not defined.");
 }
 builder.Services.AddDbContext<HMDbContext>(options =>
-options.UseMySQL(connectionString)); // Use MySQL as the database provider
+    options.UseMySQL(connectionString)); // Use MySQL as the database provider
+
+// Add Identity services and wire them to HMDbContext
+builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
+{
+    options.Password.RequireDigit = false;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequiredLength = 6;
+    options.SignIn.RequireConfirmedAccount = false;
+})
+    .AddEntityFrameworkStores<HMDbContext>()
+    .AddDefaultTokenProviders();
 
 builder.Services.RegisterServices();    // Register your services here
 var app = builder.Build();
@@ -40,6 +54,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles(); // Add this line to serve static files
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

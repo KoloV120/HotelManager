@@ -11,6 +11,11 @@ public interface IHotelService : IService<Hotel>
 
     IEnumerable<HotelMinifiedInfoProjection> GetAllMinified();
 
+    // Returns hotels owned by a specific user
+    IEnumerable<HotelGeneralInfoProjection> GetAllForOwner(string ownerId);
+
+    IEnumerable<HotelMinifiedInfoProjection> GetAllMinifiedForOwner(string ownerId);
+
     int GetCurrentGuestsCount(Guid hotelId);
 
     IEnumerable<RoomGeneralInfoProjection> GetAvailableRooms(Guid hotelId);

@@ -1,8 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 namespace HotelManager.Data;
 using HotelManager.Data.Models;
 
-public class HMDbContext : DbContext
+// Extend IdentityDbContext so ASP.NET Identity tables are stored in the same DB
+public class HMDbContext : IdentityDbContext<IdentityUser>
 {
     public HMDbContext()
     {
@@ -20,5 +23,7 @@ public class HMDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        // keep any custom model configuration here
     }
 }

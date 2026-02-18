@@ -2,6 +2,8 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using HotelManager.Models;
 using HotelManager.Core.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 using HotelManager.Data.Models;
 
 namespace HotelManager.Controllers;
@@ -9,6 +11,7 @@ namespace HotelManager.Controllers;
 /// <summary>
 /// Controller for managing the home page and hotel-related operations.
 /// </summary>
+[Authorize]
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
@@ -35,7 +38,8 @@ public class HomeController : Controller
     {
         try
         {
-            var hotels = _hotelService.GetAll();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
+            var hotels = _hotelService.GetAllForOwner(userId);
 
             var viewModel = new DashboardViewModel
             {
@@ -80,6 +84,10 @@ public class HomeController : Controller
                 Email = model.Email,
                 RoomsPerFloor = model.RoomsPerFloor
             };
+
+            // assign current user as owner
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
+            hotel.OwnerId = userId;
 
             bool success = _hotelService.Create(hotel);
             if (!success)

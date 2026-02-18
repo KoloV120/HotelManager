@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 using HotelManager.Core.Interfaces;
 using HotelManager.Models;
 using HotelManager.Data.Models;
@@ -8,6 +10,7 @@ namespace HotelManager.Controllers;
 /// <summary>
 /// Controller for managing rooms in the hotel management system.
 /// </summary>
+[Authorize]
 public class RoomController : Controller
 {
     private readonly IRoomService _roomService;
@@ -35,6 +38,14 @@ public class RoomController : Controller
     /// <returns>The view displaying the list of rooms.</returns>
     public IActionResult Index(Guid id)
     {
+        var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
+        var hotel = _hotelService.GetById(id);
+        if (hotel == null || hotel.OwnerId != userId)
+        {
+            _logger.LogWarning("Unauthorized access attempt to rooms for hotel {HotelId} by user {UserId}", id, userId);
+            return Forbid();
+        }
+
         ViewData["HotelId"] = id;
         var rooms = _roomService.GetAllByHotelId(id);
         var viewModel = rooms.Select(r => new RoomViewModel

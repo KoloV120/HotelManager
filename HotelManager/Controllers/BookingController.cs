@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 using HotelManager.Core.Interfaces;
 using HotelManager.Models;
 using HotelManager.Data.Models;
@@ -10,6 +12,7 @@ namespace HotelManager.Controllers;
 /// <summary>
 /// Controller for managing bookings in the hotel management system.
 /// </summary>
+[Authorize]
 public class BookingController : Controller
 {
     private readonly IBookingService _bookingService;
@@ -44,6 +47,15 @@ public class BookingController : Controller
     {
         try
         {
+            // ensure current user owns the hotel
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
+            var hotel = _hotelService.GetById(id);
+            if (hotel == null || hotel.OwnerId != userId)
+            {
+                _logger.LogWarning("Unauthorized access attempt to bookings for hotel {HotelId} by user {UserId}", id, userId);
+                return Forbid();
+            }
+
             ViewData["HotelId"] = id;
 
             var bookings = _hotelService.GetAllBookings(id)

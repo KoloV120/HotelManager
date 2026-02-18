@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 using HotelManager.Core.Interfaces;
 using HotelManager.Models;
 using Microsoft.Extensions.Logging;
@@ -10,6 +12,7 @@ namespace HotelManager.Controllers;
 /// <summary>
 /// Controller for managing guests in the hotel management system.
 /// </summary>
+[Authorize]
 public class GuestController : Controller
 {
     private readonly IGuestService _guestService;
@@ -41,6 +44,14 @@ public class GuestController : Controller
     {
         try
         {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier) ?? string.Empty;
+            var hotel = _hotelService.GetById(id);
+            if (hotel == null || hotel.OwnerId != userId)
+            {
+                _logger.LogWarning("Unauthorized access attempt to guests for hotel {HotelId} by user {UserId}", id, userId);
+                return Forbid();
+            }
+
             ViewData["HotelId"] = id;
 
             var guests = _guestService.GetAllByHotelId(id)
